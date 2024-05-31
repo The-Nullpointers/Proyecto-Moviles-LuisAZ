@@ -13,7 +13,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.lightBlue,
-        title: const Text("Proyecto Moviles Luis AZ"),
+        title: const Text("*Null Gym"),
         actions: [
 
           IconButton(
@@ -26,6 +26,7 @@ class _HomePageState extends State<HomePage> {
 
       body: const Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text("PLACEHOLDER")
           ],
