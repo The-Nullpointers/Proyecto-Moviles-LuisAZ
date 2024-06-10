@@ -5,6 +5,8 @@ import 'package:proyecto_luisaz_app/presentation/home_page.dart';
 import 'package:proyecto_luisaz_app/presentation/login_page.dart';
 import 'package:proyecto_luisaz_app/presentation/sign_up_page.dart';
 import 'package:proyecto_luisaz_app/providers/auth_provider.dart';
+import 'package:proyecto_luisaz_app/providers/course_provider.dart';
+import 'package:proyecto_luisaz_app/providers/local_storage_provider.dart';
 
 // Null Pointer's Gym App
 // Luis Andrés Aguilar Bolaños
@@ -26,6 +28,8 @@ class MyApp extends StatelessWidget {
 
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => LocalStorageProvider()),
+        ChangeNotifierProvider(create: (_) => CourseProvider()),
       ],
 
       child: MaterialApp(

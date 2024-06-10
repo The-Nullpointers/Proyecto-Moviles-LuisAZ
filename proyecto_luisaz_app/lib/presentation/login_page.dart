@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:proyecto_luisaz_app/config/button_styles.dart';
 import 'package:proyecto_luisaz_app/config/text_styles.dart';
 import 'package:proyecto_luisaz_app/providers/auth_provider.dart';
+import 'package:proyecto_luisaz_app/providers/local_storage_provider.dart';
 
 
 class LoginPage extends StatefulWidget {
@@ -19,6 +20,8 @@ class _LoginPageState extends State<LoginPage> {
   late TextEditingController _emailController;
   late TextEditingController _passwordController;
 
+  bool _isLoading = false;
+
   @override
   void initState() {
     super.initState();
@@ -31,7 +34,13 @@ class _LoginPageState extends State<LoginPage> {
   
   @override
   Widget build(BuildContext context) {
+
+    //Providers ---------------------------------------------
     final authProvider = context.read<AuthProvider>();
+    final localStorageProvider = context.read<LocalStorageProvider>();
+    //Providers ---------------------------------------------
+
+    authProvider.setLocalStorageProvider(localStorageProvider);
 
     return Scaffold(
       body: Center(
@@ -116,57 +125,84 @@ class _LoginPageState extends State<LoginPage> {
                   style: TextStyles.errorMessages(),
                 ),
               ),
-              
-          
-              //Botón de Login
-              Padding(
-                padding: const EdgeInsets.only(top: 20),
-                child: ElevatedButton(
-                
-                  style: ButtonStyles.primaryButton(backgroundColor: const Color.fromARGB(255, 11, 135, 75)),
-                  child: Text(
-                    'Iniciar Sesión',
-                    style: TextStyles.buttonTexts(),
-                    
-                  ),
-                  onPressed: () async {
-                    
-                    await authProvider.login(
-                      _emailController.text,
-                      _passwordController.text,
-                    );
-                    if (authProvider.jwt != null) {
-                      Navigator.pushNamed(context, '/home');
-                    }
-                
-                    setState(() {
+
+              if(_isLoading)
+                //Botón de Login - Cargando
+                Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: ElevatedButton(
+                  
+                    style: ButtonStyles.primaryButton(backgroundColor: Color.fromARGB(255, 23, 245, 138)),
+                    onPressed: null,
+                    child: Text(
+                      'Iniciando Sesión...',
+                      style: TextStyles.buttonTexts(),
                       
-                    });
-                
-                  },
-                ),
-              ),
-          
-              //Botón de SignUp
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20),
-                child: ElevatedButton(
-                
-                  style: ButtonStyles.primaryButton(
-                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 1)),
-                  child: Text(
-                    'No tienes cuenta? Registrate aquí',
-                    style: TextStyles.buttonTexts(fontSize: 15),
-                    
+                    )
                   ),
-                  onPressed: () {
-                    
-                    authProvider.clearErrorMessage();
-                    Navigator.pushNamed(context, '/signup');
-                
-                  },
                 ),
-              ),
+              
+              if(!_isLoading)
+                //Botón de Login
+                Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: ElevatedButton(
+                  
+                    style: ButtonStyles.primaryButton(backgroundColor: const Color.fromARGB(255, 11, 135, 75)),
+                    child: Text(
+                      'Iniciar Sesión',
+                      style: TextStyles.buttonTexts(),
+                      
+                    ),
+                    onPressed: () async {
+
+                      _isLoading = true;
+
+                      setState(() {
+                        
+                      });
+                      
+                      await authProvider.login(
+                        _emailController.text,
+                        _passwordController.text,
+                      );
+
+                      _isLoading = false;
+                      if (authProvider.jwt != null) {
+                        
+                        Navigator.pushNamed(context, '/home');
+                      }
+                  
+                      setState(() {
+                        
+                      });
+                  
+                    },
+                  ),
+                ),
+
+
+              if(!_isLoading)
+                //Botón de SignUp
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  child: ElevatedButton(
+                  
+                    style: ButtonStyles.primaryButton(
+                      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 1)),
+                    child: Text(
+                      'No tienes cuenta? Registrate aquí',
+                      style: TextStyles.buttonTexts(fontSize: 15),
+                      
+                    ),
+                    onPressed: () {
+                      
+                      authProvider.clearErrorMessage();
+                      Navigator.pushNamed(context, '/signup');
+                  
+                    },
+                  ),
+                ),
           
             ],
           ),

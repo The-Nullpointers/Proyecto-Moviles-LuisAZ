@@ -22,6 +22,16 @@ class TextStyles {
     );
   }
 
+  // Estilo para el cuerpo texto
+  static TextStyle body({double? fontSize, Color? color, FontWeight? fontWeight, String? fontFamily}) {
+    return TextStyle(
+      fontSize: fontSize ?? 14.0,
+      fontWeight: fontWeight ?? FontWeight.normal,
+      color: color,
+      fontFamily: fontFamily ?? 'Times New Roman',
+    );
+  }
+
   // Estilo para el texto de ejemplo de FieldBoxes
   static TextStyle placeholderForTextFields({double? fontSize, Color? color, FontWeight? fontWeight, String? fontFamily}) {
     return TextStyle(

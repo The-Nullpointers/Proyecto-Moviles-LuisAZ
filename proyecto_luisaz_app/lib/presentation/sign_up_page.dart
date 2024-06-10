@@ -20,7 +20,6 @@ class _SignUpPageState extends State<SignUpPage> {
   late TextEditingController _cedulaController;
   late TextEditingController _nameController;
 
-
   @override
   void initState() {
     super.initState();
@@ -34,8 +33,11 @@ class _SignUpPageState extends State<SignUpPage> {
   
   @override
   Widget build(BuildContext context) {
-    final authProvider = context.read<AuthProvider>();
 
+    //Providers ---------------------------------------------
+    final authProvider = context.read<AuthProvider>();
+    //Providers ---------------------------------------------
+    
     return Scaffold(
       body: SingleChildScrollView(
         child: Center(
@@ -44,7 +46,7 @@ class _SignUpPageState extends State<SignUpPage> {
             children: [
         
               
-              SizedBox( height: 80,),
+              const SizedBox( height: 80,),
               //Texto de titulo
               Container(
                 padding: const EdgeInsets.all(10),
@@ -174,7 +176,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   maxLength: 30,
                   decoration: InputDecoration(
                     labelText: 'Contraseña',
-                    counterText: "Min: 6 caracteres",
+                    counterText: "Min: 8 caracteres",
                     labelStyle: TextStyles.placeholderForTextFields(),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20.0),
@@ -204,6 +206,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 child: TextField(
                   controller: _confirmPasswordController,
                   obscureText: true,
+                  maxLength: 30,
                   decoration: InputDecoration(
                     labelText: 'Cofirmar Contraseña',
                     labelStyle: TextStyles.placeholderForTextFields(),
@@ -233,8 +236,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   authProvider.errorMessage,
                   style: TextStyles.errorMessages(),
                 ),
-              ),
-              
+              ),            
         
               //Botón de SignUp
               Padding(
@@ -249,14 +251,15 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                   onPressed: () async {
                     
-                    await authProvider.signup(
+                    bool registered = await authProvider.signup(
                       _cedulaController.text,
+                      _nameController.text,
                       _emailController.text,
                       _passwordController.text,
                       _confirmPasswordController.text
                     );
-                    if (authProvider.jwt != null) {
-                      Navigator.pushNamed(context, '/homeScreen');
+                    if (registered) {
+                      Navigator.pop(context);
                     }
                 
                     setState(() {
