@@ -1,8 +1,6 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:proyecto_luisaz_app/models/course.dart';
-import 'package:proyecto_luisaz_app/models/current_user.dart';
 import 'package:proyecto_luisaz_app/providers/auth_provider.dart';
 import 'package:proyecto_luisaz_app/services/local_database.dart';
 

@@ -5,7 +5,7 @@ import 'package:proyecto_luisaz_app/config/button_styles.dart';
 import 'package:proyecto_luisaz_app/config/text_styles.dart';
 import 'package:proyecto_luisaz_app/models/course.dart';
 
-class CourseCard extends StatelessWidget {
+class AdminCourseCard extends StatelessWidget {
   final Course course;
   final List<Color> colors = [
     Colors.red.shade100,
@@ -15,7 +15,7 @@ class CourseCard extends StatelessWidget {
     Colors.purple.shade100,
   ];
 
-  CourseCard({super.key, required this.course});
+  AdminCourseCard({super.key, required this.course});
 
   Color getRandomColor() {
     final random = Random();
@@ -59,9 +59,13 @@ class CourseCard extends StatelessWidget {
               child: ElevatedButton(
                 style: ButtonStyles.primaryButton(),
                 onPressed: () {
-                  // Add the functionality here
+                  Navigator.pushNamed(
+                    context,
+                    '/manageCourse',
+                    arguments: course,
+                  );
                 },
-                child: Text('Confirmar Asistencia', style: TextStyles.buttonTexts(fontSize: 18)),
+                child: Text('Administrar Curso', style: TextStyles.buttonTexts(fontSize: 18)),
               ),
             ),
           ],

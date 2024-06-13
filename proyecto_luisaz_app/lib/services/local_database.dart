@@ -7,6 +7,7 @@ import 'package:proyecto_luisaz_app/providers/auth_provider.dart';
 class LocalDatabase {
   late Future<Isar> db;
   late AuthProvider authProvider;
+  String? userActionToCourse;
 
   void setAuthProvider(AuthProvider x){
     authProvider = x;
@@ -38,6 +39,7 @@ class LocalDatabase {
 
     try {
       await isar.writeTxn(() async {
+        
         await isar.currentUsers.clear();
         await isar.currentUsers.put(currentUser);
       });
@@ -106,4 +108,5 @@ class LocalDatabase {
       return null;
     }
   }
+
 }

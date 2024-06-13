@@ -1,4 +1,3 @@
-import 'package:isar/isar.dart';
 import 'package:proyecto_luisaz_app/models/current_user_response.dart';
 
 class Course {

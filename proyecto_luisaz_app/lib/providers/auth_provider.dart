@@ -155,7 +155,7 @@ class AuthProvider with ChangeNotifier {
         final Map<String, dynamic> responseBody = jsonDecode(response.body);
         _jwt = responseBody['jwt'];
 
-        saveCurrentUserData(jwt);
+        await saveCurrentUserData(jwt);
 
 
 
@@ -175,6 +175,8 @@ class AuthProvider with ChangeNotifier {
     final url = Uri.parse('$baseUrl/api/users/me?populate=role');
 
     try {
+
+      print("JWT: $jwt");
       
       final response = await http.get(
         url,

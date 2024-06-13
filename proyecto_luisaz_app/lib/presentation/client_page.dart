@@ -5,16 +5,16 @@ import 'package:proyecto_luisaz_app/config/text_styles.dart';
 import 'package:proyecto_luisaz_app/providers/auth_provider.dart';
 import 'package:proyecto_luisaz_app/providers/course_provider.dart';
 import 'package:proyecto_luisaz_app/providers/local_storage_provider.dart';
-import 'package:proyecto_luisaz_app/widgets/course_card.dart';
+import 'package:proyecto_luisaz_app/widgets/client_course_card.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class ClientPage extends StatefulWidget {
+  const ClientPage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<ClientPage> createState() => _ClientPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _ClientPageState extends State<ClientPage> {
 
   String? currentUserRole;
   String? currentUserUsername;
@@ -59,6 +59,7 @@ class _HomePageState extends State<HomePage> {
 
 
         return Scaffold(
+
           appBar: AppBar(
             automaticallyImplyLeading: false,
             backgroundColor: const Color.fromARGB(255, 160, 225, 255),
@@ -99,7 +100,7 @@ class _HomePageState extends State<HomePage> {
                   ),
 
                   SizedBox(
-                    height: 500,
+                    height: 600,
                     width: 400,
                     // Lista de Cursos
                     child: Scrollbar(
@@ -110,52 +111,56 @@ class _HomePageState extends State<HomePage> {
                         itemCount: courseProvider.currentUserEnrolledCourses.length,
                         itemBuilder: (context, index) {
                           final course = courseProvider.currentUserEnrolledCourses[index];
-                          return CourseCard(course: course);
+                          return ClientCourseCard(course: course);
                         },
                       ),
                     ),
                   ),
 
 
-                  Padding(
-                    padding: EdgeInsets.only(top: 20),
-                    child: ElevatedButton(
-                      style: ButtonStyles.primaryButton(
-                        backgroundColor: Color.fromARGB(255, 0, 96, 131),
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20, left: 20,),
+                        child: ElevatedButton(
+                          style: ButtonStyles.primaryButton(
+                            backgroundColor: Color.fromARGB(255, 0, 96, 131),
+                          ),
+                          onPressed: () async {
+                            await courseProvider.loadcurrentUserEnrolledCoursesList();
+                      
+                            setState(() {
+                              
+                            });
+                          },
+                          child: Text(
+                            'Refrescar Cursos',
+                            style: TextStyles.buttonTexts(),
+                          ),
+                        ),
                       ),
-                      onPressed: () async {
-                        await courseProvider.loadcurrentUserEnrolledCoursesList();
 
-                        setState(() {
-                          
-                        });
-                      },
-                      child: Text(
-                        'Refrescar Cursos',
-                        style: TextStyles.buttonTexts(),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20, left: 20,),
+                        child: ElevatedButton(
+                          style: ButtonStyles.primaryButton(
+                            backgroundColor: Color.fromARGB(255, 237, 59, 19),
+                          ),
+                          onPressed: () async {
+                            await authProvider.logout();
+                            if (authProvider.jwt == null) {
+                              Navigator.pushReplacementNamed(context, '/login');
+                            }
+                          },
+                          child: Text(
+                            'Cerrar Sesión',
+                            style: TextStyles.buttonTexts(),
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
 
-
-                  Padding(
-                    padding: EdgeInsets.only(top: 20),
-                    child: ElevatedButton(
-                      style: ButtonStyles.primaryButton(
-                        backgroundColor: Color.fromARGB(255, 237, 59, 19),
-                      ),
-                      onPressed: () async {
-                        await authProvider.logout();
-                        if (authProvider.jwt == null) {
-                          Navigator.pushReplacementNamed(context, '/login');
-                        }
-                      },
-                      child: Text(
-                        'Cerrar Sesión',
-                        style: TextStyles.buttonTexts(),
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),

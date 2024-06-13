@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
-import 'package:proyecto_luisaz_app/presentation/home_page.dart';
+import 'package:proyecto_luisaz_app/presentation/admin_page.dart';
+import 'package:proyecto_luisaz_app/presentation/client_page.dart';
 import 'package:proyecto_luisaz_app/presentation/login_page.dart';
+import 'package:proyecto_luisaz_app/presentation/manage_course.dart';
 import 'package:proyecto_luisaz_app/presentation/sign_up_page.dart';
 import 'package:proyecto_luisaz_app/providers/auth_provider.dart';
 import 'package:proyecto_luisaz_app/providers/course_provider.dart';
@@ -41,7 +43,9 @@ class MyApp extends StatelessWidget {
         routes: {
           '/login': (context) => const LoginPage(),
           '/signup': (context) => const SignUpPage(),
-          '/home': (context) => const HomePage(),
+          '/homeClient': (context) => const ClientPage(),
+          '/homeAdmin': (context) => const AdminPage(),
+          '/manageCourse': (context) => const ManageCoursePage(),
         },
 
         theme: ThemeData(
@@ -50,7 +54,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
 
-        home: LoginPage(),
+        home: const LoginPage(),
       )
     );
   }

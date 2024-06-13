@@ -155,29 +155,33 @@ class _LoginPageState extends State<LoginPage> {
                       
                     ),
                     onPressed: () async {
-
                       _isLoading = true;
+                      setState(() {});
 
-                      setState(() {
-                        
-                      });
-                      
-                      await authProvider.login(
-                        _emailController.text,
-                        _passwordController.text,
-                      );
+                      final email = _emailController.text;
+                      final password = _passwordController.text;
+
+                      await authProvider.login(email, password);
 
                       _isLoading = false;
+
                       if (authProvider.jwt != null) {
-                        
-                        Navigator.pushNamed(context, '/home');
+                        String? role = await localStorageProvider.getCurrentUserRole();
+                        print("ROLE: $role");
+                        if(role == "Client"){
+                          Navigator.pushNamed(context, "/homeClient");  
+                        }
+
+                        if(role == "Administrator"){
+                          Navigator.pushNamed(context, "/homeAdmin"); 
+                        }
+
                       }
-                  
-                      setState(() {
-                        
-                      });
-                  
+
+                      setState(() {});
                     },
+
+
                   ),
                 ),
 

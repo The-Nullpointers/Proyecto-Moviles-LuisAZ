@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -56,11 +55,14 @@ class CourseProvider extends ChangeNotifier {
             usersEnrolled: usersEnrolled,
           );
 
-          // Add course to the list
+          
           currentUserEnrolledCourses.add(course);
         }
 
-        filterCoursesByEnrolledUser(await localStorageProvider.getCurrentUserUsername());
+        if(await localStorageProvider.getCurrentUserRole() != "Administrator"){
+          filterCoursesByEnrolledUser(await localStorageProvider.getCurrentUserUsername());
+        }
+        
 
         notifyListeners();
       } else {
