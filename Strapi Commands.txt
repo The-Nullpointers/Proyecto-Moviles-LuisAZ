@@ -1,0 +1,10 @@
+! Execute in CMD, in same folder as proyecto_luisaz_app
+
+	> npx create-strapi-app@latest luis-az-strapi --quickstart
+
+! Execute in CMD, inside folder luis-az-strapi
+
+	> npm install --save-dev ajv
+	> npm audit fix --force (execute until it npm run develop works)
+
+	> npm run develop
