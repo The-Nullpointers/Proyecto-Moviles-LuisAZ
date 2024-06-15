@@ -374,7 +374,6 @@ export interface ApiCourseCourse extends Schema.CollectionType {
     draftAndPublish: true;
   };
   attributes: {
-    courseId: Attribute.UID & Attribute.Required;
     name: Attribute.String & Attribute.Required;
     capacity: Attribute.Integer & Attribute.Required;
     users: Attribute.Relation<
