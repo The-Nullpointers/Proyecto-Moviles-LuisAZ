@@ -12,10 +12,6 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "courseId": {
-      "type": "uid",
-      "required": true
-    },
     "name": {
       "type": "string",
       "required": true

@@ -362,6 +362,47 @@ export interface AdminTransferTokenPermission extends Schema.CollectionType {
   };
 }
 
+export interface ApiAttendaceAttendace extends Schema.CollectionType {
+  collectionName: 'attendaces';
+  info: {
+    singularName: 'attendace';
+    pluralName: 'attendaces';
+    displayName: 'Attendace';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    course: Attribute.Relation<
+      'api::attendace.attendace',
+      'oneToOne',
+      'api::course.course'
+    >;
+    user: Attribute.Relation<
+      'api::attendace.attendace',
+      'oneToOne',
+      'plugin::users-permissions.user'
+    >;
+    consecutive_absences: Attribute.Integer & Attribute.DefaultTo<0>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::attendace.attendace',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::attendace.attendace',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface ApiCourseCourse extends Schema.CollectionType {
   collectionName: 'courses';
   info: {
@@ -374,7 +415,6 @@ export interface ApiCourseCourse extends Schema.CollectionType {
     draftAndPublish: true;
   };
   attributes: {
-    courseId: Attribute.UID & Attribute.Required;
     name: Attribute.String & Attribute.Required;
     capacity: Attribute.Integer & Attribute.Required;
     users: Attribute.Relation<
@@ -837,6 +877,7 @@ declare module '@strapi/types' {
       'admin::api-token-permission': AdminApiTokenPermission;
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
+      'api::attendace.attendace': ApiAttendaceAttendace;
       'api::course.course': ApiCourseCourse;
       'plugin::upload.file': PluginUploadFile;
       'plugin::upload.folder': PluginUploadFolder;

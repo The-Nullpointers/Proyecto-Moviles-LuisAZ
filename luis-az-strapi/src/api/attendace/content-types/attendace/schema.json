@@ -1,0 +1,30 @@
+{
+  "kind": "collectionType",
+  "collectionName": "attendaces",
+  "info": {
+    "singularName": "attendace",
+    "pluralName": "attendaces",
+    "displayName": "Attendace",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "course": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::course.course"
+    },
+    "user": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.user"
+    },
+    "consecutive_absences": {
+      "type": "integer",
+      "default": 0
+    }
+  }
+}
