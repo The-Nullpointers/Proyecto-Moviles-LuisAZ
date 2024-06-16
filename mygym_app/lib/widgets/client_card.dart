@@ -1,20 +1,37 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:mygym_app/config/text_styles.dart';
 import 'package:mygym_app/models/user.dart';
+import 'package:mygym_app/providers/attendance_provider.dart';
+import 'package:provider/provider.dart';
 
-class ClientCard extends StatelessWidget {
+class ClientCard extends StatefulWidget {
   final User user;
+
+  const ClientCard({Key? key, required this.user}) : super(key: key);
+
+  @override
+  State<ClientCard> createState() => _ClientCardState();
+}
+
+class _ClientCardState extends State<ClientCard> {
+  final List<String> _items = ["Presente", "Ausente"];
+  String? _selectedItem;
+
   final List<Color> colors = [
     Colors.teal.shade100,
-    Colors.pink.shade100,
     Colors.amber.shade100,
     Colors.cyan.shade100,
     Colors.lime.shade100,
   ];
 
-  ClientCard({super.key, required this.user});
+  late final Color cardColor;
+
+  @override
+  void initState() {
+    super.initState();
+    cardColor = getRandomColor();
+  }
 
   Color getRandomColor() {
     final random = Random();
@@ -23,8 +40,12 @@ class ClientCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
-    final cardColor = getRandomColor();
+
+    //Providers ---------------------------------------------
+    final attendanceProvider = context.read<AttendanceProvider>();
+    //Providers ---------------------------------------------
+
+    attendanceProvider.updateUserAttendanceStatus(widget.user, _selectedItem);
 
     return Card(
       color: cardColor,
@@ -35,33 +56,71 @@ class ClientCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              user.username,
-              style: TextStyles.subtitles(fontSize: 20, fontWeight: FontWeight.bold),
+              widget.user.username,
+              style: TextStyles.subtitles(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-
             const SizedBox(height: 5),
             Text(
-              "Cédula: ${user.cedula}",
+              "Cédula: ${widget.user.cedula}",
               style: TextStyles.body(),
             ),
             Text(
-              "Correo: ${user.email}",
+              "Correo: ${widget.user.email}",
               style: TextStyles.body(),
             ),
-
             Padding(
               padding: const EdgeInsets.only(top: 10),
               child: Row(
+                mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  ElevatedButton(
-                    onPressed: () {},
-                    child: Text("Asistencia", style: TextStyles.buttonTexts(color: const Color.fromARGB(255, 23, 77, 122)),)
+                  Flexible(
+                    child: DropdownButtonFormField<String>(
+                      hint: const Text('Marcar Asistencia'),
+                      value: _selectedItem,
+                      icon: const Icon(Icons.arrow_drop_down),
+                      iconSize: 24,
+                      elevation: 16,
+                      style: TextStyles.subtitles(color: Colors.black),
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: _selectedItem == "Presente"
+                            ? Colors.green.shade300
+                            : _selectedItem == "Ausente"
+                                ? Colors.red.shade300
+                                : Colors.white,
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 8.0,
+                          horizontal: 12.0,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                      onChanged: (String? newValue) async {
+                        await attendanceProvider.updateUserAttendanceStatus(widget.user, newValue);
+                        setState(() {
+                          _selectedItem = newValue!;
+                          
+                        });
+                      },
+                      items: _items.map<DropdownMenuItem<String>>(
+                        (String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        },
+                      ).toList(),
+                    ),
                   ),
                 ],
               ),
-            )
-            
+            ),
           ],
         ),
       ),

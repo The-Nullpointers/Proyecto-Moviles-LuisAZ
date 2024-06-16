@@ -68,9 +68,26 @@ class _AdminPageState extends State<AdminPage> {
               style: TextStyles.subtitles(fontSize: 30, fontWeight: FontWeight.w800),
             ),
             actions: [
+
               IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.settings),
+                onPressed: () async {
+                  await courseProvider.loadcurrentUserEnrolledCoursesList();
+            
+                  setState(() {
+                    
+                  });
+                },
+                icon: const Icon(Icons.refresh_rounded),
+              ),
+
+              IconButton(
+                onPressed: () async {
+                  await authProvider.logout();
+                  if (authProvider.jwt == null) {
+                    Navigator.pushReplacementNamed(context, '/login');
+                  }
+                },
+                icon: const Icon(Icons.logout),
               ),
             ],
           ),
@@ -100,29 +117,8 @@ class _AdminPageState extends State<AdminPage> {
                     ),
                   ),
 
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 10, left: 20, right: 20),
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        style: ButtonStyles.primaryButton(
-                          backgroundColor: const Color.fromARGB(255, 23, 245, 138),
-                        ),
-                        onPressed: () async {
-                          
-                          Navigator.pushNamed(context, '/manageCourse');
-                          
-                        },
-                        child: Text(
-                          'Nuevo Curso',
-                          style: TextStyles.buttonTexts(color: Colors.black, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                  ),
-
                   SizedBox(
-                    height: 550,
+                    height: 600,
                     width: 400,
 
                     
@@ -146,44 +142,47 @@ class _AdminPageState extends State<AdminPage> {
                     ),
                   ),
 
-
+                  const SizedBox(height: 20,),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisSize: MainAxisSize.max,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(top: 20, left: 20,),
-                        child: ElevatedButton(
-                          style: ButtonStyles.primaryButton(
-                            backgroundColor: Color.fromARGB(255, 0, 96, 131),
-                          ),
-                          onPressed: () async {
-                            await courseProvider.loadcurrentUserEnrolledCoursesList();
-                      
-                            setState(() {
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: SizedBox(
+                          child: ElevatedButton(
+                            style: ButtonStyles.primaryButton(
+                              backgroundColor: const Color.fromARGB(255, 23, 245, 138),
+                            ),
+                            onPressed: () async {
                               
-                            });
-                          },
-                          child: Text(
-                            'Refrescar Cursos',
-                            style: TextStyles.buttonTexts(),
+                              Navigator.pushNamed(context, '/manageCourse');
+                              
+                            },
+                            child: Text(
+                              'Nuevo Curso',
+                              style: TextStyles.buttonTexts(color: Colors.black, fontWeight: FontWeight.bold),
+                            ),
                           ),
                         ),
                       ),
 
                       Padding(
-                        padding: EdgeInsets.only(top: 20, left: 20,),
-                        child: ElevatedButton(
-                          style: ButtonStyles.primaryButton(
-                            backgroundColor: Color.fromARGB(255, 237, 59, 19),
-                          ),
-                          onPressed: () async {
-                            await authProvider.logout();
-                            if (authProvider.jwt == null) {
-                              Navigator.pushReplacementNamed(context, '/login');
-                            }
-                          },
-                          child: Text(
-                            'Cerrar Sesión',
-                            style: TextStyles.buttonTexts(),
+                        padding: const EdgeInsets.only(bottom: 10, ),
+                        child: SizedBox(
+                          child: ElevatedButton(
+                            style: ButtonStyles.primaryButton(
+                              backgroundColor: const Color.fromARGB(255, 0, 96, 131)
+                            ),
+                            onPressed: () async {
+                              
+                              Navigator.pushNamed(context, '/manageCourse');
+                              
+                            },
+                            child: Text(
+                              'Nuevo Cliente',
+                              style: TextStyles.buttonTexts(color: Colors.white, fontWeight: FontWeight.bold),
+                            ),
                           ),
                         ),
                       ),

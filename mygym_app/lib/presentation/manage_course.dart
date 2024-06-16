@@ -60,12 +60,7 @@ class _ManageCoursePageState extends State<ManageCoursePage> {
           "*Null's Gym",
           style: TextStyles.subtitles(fontSize: 30, fontWeight: FontWeight.w800),
         ),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.settings),
-          ),
-        ],
+        
       ),
       body: Padding(
         
@@ -293,7 +288,7 @@ class _ManageCoursePageState extends State<ManageCoursePage> {
                       padding: const EdgeInsets.only(left: 20),
                       child: ElevatedButton(
                         style: ButtonStyles.primaryButton(
-                          backgroundColor: const Color.fromARGB(255, 237, 59, 19),
+                          backgroundColor: const Color.fromARGB(255, 159, 25, 25),
                         ),
                       
                         onPressed: () async {
@@ -329,6 +324,38 @@ class _ManageCoursePageState extends State<ManageCoursePage> {
                     ),
                 ],
               ),
+
+              if(currentCourse.id != "")
+                SizedBox(height: 20,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton(
+                      style: ButtonStyles.primaryButton(backgroundColor: Color.fromARGB(255, 17, 98, 59)),
+                      onPressed: () {
+                        Navigator.pushNamed(
+                          context,
+                          '/enrollClient',
+                          arguments: currentCourse,
+                        );
+                      },
+                      child: Text('Matricular Cliente', style: TextStyles.buttonTexts(fontSize: 15, color: Colors.white)),
+                    ),
+
+                    ElevatedButton(
+                      style: ButtonStyles.primaryButton(backgroundColor: Color.fromARGB(255, 159, 25, 25)),
+                      onPressed: () {
+                        Navigator.pushNamed(
+                          context,
+                          '/unenrollClient',
+                          arguments: currentCourse,
+                        );
+                      },
+                      child: Text('Desmatricular Cliente', style: TextStyles.buttonTexts(fontSize: 15, color: Colors.white)),
+                    ),
+                  ],
+                ),
+              
           
               const SizedBox(height: 20),
               ElevatedButton(

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:mygym_app/models/course.dart';
+import 'package:mygym_app/models/user.dart';
 import 'package:mygym_app/providers/local_storage_provider.dart';
 
 class CourseProvider extends ChangeNotifier {
@@ -25,7 +26,7 @@ class CourseProvider extends ChangeNotifier {
     if (currentUserEnrolledCourses.isEmpty) {
       final url = Uri.parse("$baseUrl/api/courses?populate=users");
 
-      print("CURRENT USER JWT: $currentUserJWT");
+      //print("CURRENT USER JWT: $currentUserJWT");
 
       final response = await http.get(url, headers: {
         'Content-Type': 'application/json',
@@ -207,6 +208,64 @@ class CourseProvider extends ChangeNotifier {
     } catch (e) {
       print('Error fetching course by id: $e');
       return null;
+    }
+  }
+
+  Future<void> unenrolledUserFromCourse(User user, Course course, String? jwtToken) async {
+    final url = '$baseUrl/api/courses';
+
+    try {
+      // Step 1: Fetch all course records
+      final response = await http.get(
+        Uri.parse('$url?populate=*'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $jwtToken',
+        },
+      );
+
+      if (response.statusCode != 200) {
+        throw Exception('Failed to load courses');
+      }
+
+      final courses = json.decode(response.body)['data'];
+
+      // Step 2: Find the specific course record
+      final courseRecord = courses.firstWhere(
+        (courseData) => courseData['id'].toString() == course.id,
+        orElse: () => null,
+      );
+
+      if (courseRecord == null) {
+        throw Exception('Course record not found for courseId ${course.id}');
+      }
+
+      final courseUsers = courseRecord['attributes']['users']['data'];
+
+      // Step 3: Remove the user from the course's user list
+      final updatedUsers = courseUsers.where((userData) => userData['attributes']['cedula'] != user.cedula).toList();
+
+      // Step 4: Update the course record with the modified user list
+      final updateResponse = await http.put(
+        Uri.parse('$url/${course.id}'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $jwtToken',
+        },
+        body: json.encode({
+          'data': {
+            'users': updatedUsers.map((user) => {'id': user['id']}).toList(),
+          },
+        }),
+      );
+
+      if (updateResponse.statusCode != 200) {
+        throw Exception('Failed to update course');
+      }
+
+      print('User unenrolled successfully');
+    } catch (e) {
+      print('Error: $e');
     }
   }
 }

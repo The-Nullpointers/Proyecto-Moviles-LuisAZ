@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:mygym_app/presentation/enroll_client.dart';
+import 'package:mygym_app/presentation/unenroll_client.dart';
+import 'package:mygym_app/providers/attendance_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:mygym_app/presentation/admin_page.dart';
 import 'package:mygym_app/presentation/client_page.dart';
@@ -33,6 +36,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => LocalStorageProvider()),
         ChangeNotifierProvider(create: (_) => CourseProvider()),
+        ChangeNotifierProvider(create: (_) => AttendanceProvider()),
       ],
 
       child: MaterialApp(
@@ -48,6 +52,8 @@ class MyApp extends StatelessWidget {
           '/homeAdmin': (context) => const AdminPage(),
           '/manageCourse': (context) => const ManageCoursePage(),
           '/usersEnrolledCourse': (context) => const CourseClientsPage(),
+          '/enrollClient': (context) => const EnrollClientPage(),
+          '/unenrollClient': (context) => const UnenrollClientPage(),
         },
 
         theme: ThemeData(

@@ -57,39 +57,51 @@ class AdminCourseCard extends StatelessWidget {
 
             Align(
               alignment: Alignment.centerRight,
-              child: Row(
-
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
 
                 children: [
-                  ElevatedButton(
-                    
-                    style: ButtonStyles.primaryButton(),
-                    onPressed: () {
-                      Navigator.pushNamed(
-                        context,
-                        '/usersEnrolledCourse',
-                        arguments: course,
-                      );
-                    },
-                    child: Text('Marcar Asistencia', style: TextStyles.buttonTexts(fontSize: 15)),
+                  Row(
+                  
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  
+                    children: [
+                      ElevatedButton(
+                        
+                        style: ButtonStyles.primaryButton(),
+                        onPressed: () {
+                          Navigator.pushNamed(
+                            context,
+                            '/usersEnrolledCourse',
+                            arguments: course,
+                          );
+                        },
+                        child: Text('Marcar Asistencia', style: TextStyles.buttonTexts(fontSize: 14)),
+                      ),
+                  
+                      const SizedBox(height: 5,),
+
+                      ElevatedButton(
+                        style: ButtonStyles.primaryButton(backgroundColor: Color.fromARGB(255, 159, 25, 25)),
+                        onPressed: () {
+                          Navigator.pushNamed(
+                            context,
+                            '/manageCourse',
+                            arguments: course,
+                          );
+                        },
+                        child: Text('   Administrar Curso   ', style: TextStyles.buttonTexts(fontSize: 14, color: Colors.white)),
+                      ),
+                  
+                      
+                      
+                    ],
                   ),
 
-                  const SizedBox(height: 10,),
-
-                  ElevatedButton(
-                    style: ButtonStyles.primaryButton(backgroundColor: Color.fromARGB(255, 159, 25, 25)),
-                    onPressed: () {
-                      Navigator.pushNamed(
-                        context,
-                        '/manageCourse',
-                        arguments: course,
-                      );
-                    },
-                    child: Text('Administrar Curso', style: TextStyles.buttonTexts(fontSize: 15, color: Colors.white)),
-                  ),
+                  
                 ],
               ),
+            
             ),
           ],
         ),

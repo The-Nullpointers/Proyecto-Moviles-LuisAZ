@@ -72,4 +72,21 @@ class ButtonStyles {
       textStyle: textStyle,
     );
   }
+
+  static InputDecoration dropdownDecoration({
+    Color? backgroundColor,
+    Color? foregroundColor,
+    EdgeInsetsGeometry? padding,
+    BorderRadius? borderRadius,
+  }) {
+    return InputDecoration(
+      filled: true,
+      fillColor: backgroundColor ?? const Color.fromARGB(255, 1, 61, 110),
+      contentPadding: padding ?? const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+      border: OutlineInputBorder(
+        borderRadius: borderRadius ?? BorderRadius.circular(12),
+        borderSide: BorderSide.none,
+      ),
+    );
+  }
 }
