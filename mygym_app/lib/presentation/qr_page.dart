@@ -5,6 +5,7 @@ import 'package:mygym_app/config/button_styles.dart';
 import 'package:mygym_app/config/text_styles.dart';
 import 'package:mygym_app/models/course.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:uuid/uuid.dart';
 
 class QrPage extends StatefulWidget {
   final Course? course;
@@ -44,10 +45,8 @@ class _QrPageState extends State<QrPage> {
   }
 
   String generateUuid() {
-    final random = Random();
-    final dateTime = DateTime.now().millisecondsSinceEpoch;
-    final randomInt = random.nextInt(pow(2, 32).toInt());
-    return '$dateTime-$randomInt';
+    var uuid = const Uuid();
+    return uuid.v4();
   }
 
   @override
