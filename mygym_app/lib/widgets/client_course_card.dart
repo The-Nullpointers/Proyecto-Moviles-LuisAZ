@@ -7,7 +7,8 @@ import 'package:mygym_app/models/course.dart';
 class ClientCourseCard extends StatelessWidget {
   final Course course;
 
-  // To assign random colors to cards
+  //Asignación de colores aleatorios a cada card
+  
   final List<Color> colors = [
     Colors.red.shade100,
     Colors.blue.shade100,
@@ -26,6 +27,8 @@ class ClientCourseCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cardColor = getRandomColor();
+
+// Implementación de cards para la separación del contenido en el sistema
 
     return Card(
       color: cardColor,

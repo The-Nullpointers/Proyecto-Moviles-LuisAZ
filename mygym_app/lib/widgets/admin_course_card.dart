@@ -26,7 +26,7 @@ class AdminCourseCard extends StatelessWidget {
   Widget build(BuildContext context) {
     
     final cardColor = getRandomColor();
-
+// Cards que contienen los cursos disponibles a matricular dentro del sistema
     return Card(
       color: cardColor,
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
@@ -64,7 +64,9 @@ class AdminCourseCard extends StatelessWidget {
                   Row(
                   
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  
+
+// Botón para marcar la asistencia de los clientes registrados en el curso seleccionado
+
                     children: [
                       ElevatedButton(
                         
@@ -80,9 +82,11 @@ class AdminCourseCard extends StatelessWidget {
                       ),
                   
                       const SizedBox(height: 5,),
+                      
+// Botón para administrar a los clientes registrados en el curso seleccionado
 
                       ElevatedButton(
-                        style: ButtonStyles.primaryButton(backgroundColor: Color.fromARGB(255, 159, 25, 25)),
+                        style: ButtonStyles.primaryButton(backgroundColor: const Color.fromARGB(255, 159, 25, 25)),
                         onPressed: () {
                           Navigator.pushNamed(
                             context,
@@ -92,20 +96,17 @@ class AdminCourseCard extends StatelessWidget {
                         },
                         child: Text('   Administrar Curso   ', style: TextStyles.buttonTexts(fontSize: 14, color: Colors.white)),
                       ),
-                  
-                      
-                      
                     ],
                   ),
-
-                  
                 ],
               ),
             
             ),
           ],
         ),
+
       ),
+
     );
   }
 }

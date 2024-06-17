@@ -44,6 +44,8 @@ class _ClientCardState extends State<ClientCard> {
     final attendanceProvider = context.read<AttendanceProvider>();
     //Providers ---------------------------------------------
 
+// Cards que muestran a cada cliente registrado en el sistema
+
     return Card(
       color: cardColor,
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
@@ -71,12 +73,12 @@ class _ClientCardState extends State<ClientCard> {
 
             const SizedBox(height: 20,),
             
-
+// Botón para administrar a cada cliente
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 ElevatedButton(
-                  style: ButtonStyles.primaryButton(backgroundColor: Color.fromARGB(255, 159, 25, 25)),
+                  style: ButtonStyles.primaryButton(backgroundColor: const Color.fromARGB(255, 159, 25, 25)),
                   onPressed: () {
                     Navigator.pushNamed(
                       context,
