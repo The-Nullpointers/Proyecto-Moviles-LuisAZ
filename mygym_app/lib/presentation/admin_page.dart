@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mygym_app/models/course.dart';
 import 'package:provider/provider.dart';
 import 'package:mygym_app/config/button_styles.dart';
 import 'package:mygym_app/config/text_styles.dart';
@@ -155,8 +156,16 @@ class _AdminPageState extends State<AdminPage> {
                               backgroundColor: const Color.fromARGB(255, 23, 245, 138),
                             ),
                             onPressed: () async {
+
+                              Course currentCourse = Course(
+                                id: "",
+                                name: '',
+                                capacity: 0,
+                                schedule: DateTime.now(),
+                                usersEnrolled: [],
+                              );
                               
-                              Navigator.pushNamed(context, '/manageCourse');
+                              Navigator.pushNamed(context, '/manageCourse', arguments: currentCourse);
                               
                             },
                             child: Text(

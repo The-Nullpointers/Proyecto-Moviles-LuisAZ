@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:mygym_app/config/button_styles.dart';
 import 'package:mygym_app/config/text_styles.dart';
@@ -8,7 +7,7 @@ import 'package:mygym_app/models/course.dart';
 class ClientCourseCard extends StatelessWidget {
   final Course course;
 
-  //Para que las cartas tengan colorcitos
+  // To assign random colors to cards
   final List<Color> colors = [
     Colors.red.shade100,
     Colors.blue.shade100,
@@ -26,27 +25,21 @@ class ClientCourseCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     final cardColor = getRandomColor();
 
     return Card(
       color: cardColor,
-      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
       child: Padding(
-        padding: EdgeInsets.all(15),
+        padding: const EdgeInsets.all(15),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
-            //loco esto ve feo
-            // las carttas estan bonitas no joda
-            //solo usted sabe wn
-            //su culo su culo
             Text(
               course.name,
               style: TextStyles.subtitles(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 5),
+            const SizedBox(height: 5),
             Text(
               "Fecha: ${course.schedule.toLocal().toString().split(' ')[0]}",
               style: TextStyles.body(),
@@ -55,18 +48,18 @@ class ClientCourseCard extends StatelessWidget {
               "Hora: ${course.schedule.toLocal().toString().split(' ')[1].substring(0, 5)}",
               style: TextStyles.body(),
             ),
-            SizedBox(height: 5),
+            const SizedBox(height: 5),
             Text(
               "Cupos totales: ${course.capacity}",
               style: TextStyles.body(),
             ),
-            SizedBox(height: 15),
+            const SizedBox(height: 15),
             Align(
               alignment: Alignment.centerRight,
               child: ElevatedButton(
                 style: ButtonStyles.primaryButton(),
                 onPressed: () {
-                  // Add the functionality here
+                  Navigator.pushNamed(context, "/qr", arguments: course);
                 },
                 child: Text('Confirmar Asistencia', style: TextStyles.buttonTexts(fontSize: 18)),
               ),

@@ -6,7 +6,6 @@ import 'package:mygym_app/widgets/client_card.dart';
 import 'package:provider/provider.dart';
 import 'package:mygym_app/config/button_styles.dart';
 import 'package:mygym_app/config/text_styles.dart';
-import 'package:mygym_app/providers/auth_provider.dart';
 import 'package:mygym_app/providers/course_provider.dart';
 import 'package:mygym_app/providers/local_storage_provider.dart';
 

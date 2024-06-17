@@ -9,7 +9,7 @@ import 'package:mygym_app/providers/local_storage_provider.dart';
 import 'package:provider/provider.dart';
 
 class EnrollClientPage extends StatefulWidget {
-  const EnrollClientPage({Key? key}) : super(key: key);
+  const EnrollClientPage({super.key});
 
   @override
   State<EnrollClientPage> createState() => _EnrollClientPageState();
