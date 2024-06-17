@@ -23,7 +23,7 @@ import 'package:mygym_app/providers/local_storage_provider.dart';
 // Luis David Zeledón Gómez
 
 void main() async {
-  await dotenv.load(fileName: ".env"); 
+  await dotenv.load(fileName: ".env"); // Duré 2 horas dando vueltas porque el provider no quería servir sin esta línea
   runApp(const MyApp());
 }
 
@@ -50,7 +50,6 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
 
         //Declara rutas para luego facilitar la navegacion mediante botones
-        
         initialRoute: '/login',
         routes: {
           '/login': (context) => const LoginPage(),

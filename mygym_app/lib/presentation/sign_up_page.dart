@@ -14,7 +14,6 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
 
-  // Controladores para los campos de texto
   late TextEditingController _emailController;
   late TextEditingController _passwordController;
   late TextEditingController _confirmPasswordController;
@@ -24,7 +23,6 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   void initState() {
     super.initState();
-    // Inicialización de los controladores de texto
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
     _cedulaController = TextEditingController();
@@ -32,40 +30,42 @@ class _SignUpPageState extends State<SignUpPage> {
     _nameController = TextEditingController();
   }
 
+  
   @override
   Widget build(BuildContext context) {
 
-    // Proveedor de autenticación
+    //Providers ---------------------------------------------
     final authProvider = context.read<AuthProvider>();
-
+    //Providers ---------------------------------------------
+    
     return Scaffold(
       body: SingleChildScrollView(
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-
-              const SizedBox(height: 80,),
+        
               
-              // Icono y título de la aplicación
+              const SizedBox( height: 80,),
+              //Texto de titulo
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(100),
                   border: Border.all(width: 10, color: Colors.black)
                 ),
+        
                 child: const Icon(
                   Icons.sports_gymnastics_rounded,
                   size: 150,
                 ),
               ),
-              
+        
               Text(
                 "*Null's Gym",
                 style: TextStyles.titles(),
               ),
-              
-              // Subtítulo "Registrarse"
+        
               Padding(
                 padding: const EdgeInsets.only(top: 30),
                 child: Text(
@@ -73,8 +73,8 @@ class _SignUpPageState extends State<SignUpPage> {
                   style: TextStyles.subtitles(fontSize: 25),
                 ),
               ),
-
-              // Campo de texto para la cédula
+        
+              //Input de Cedula
               Padding(
                 padding: const EdgeInsets.only(
                   top: 20.0,
@@ -99,7 +99,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
               ),
 
-              // Mensaje de error para la cédula
+              //Error con la cedula
               if(authProvider.errorCedula)
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -110,7 +110,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                 ),
 
-              // Campo de texto para el nombre completo
+              //Input de Nombre Completo
               Padding(
                 padding: const EdgeInsets.only(
                   top: 20.0,
@@ -131,7 +131,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
               ),
               
-              // Campo de texto para el correo electrónico
+              //Input de Correo
               Padding(
                 padding: const EdgeInsets.only(
                   top: 20.0,
@@ -151,8 +151,8 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                 ),
               ),
-              
-              // Mensaje de error para el correo
+        
+              // Error con el correo
               if(authProvider.errorEmail)
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -162,8 +162,8 @@ class _SignUpPageState extends State<SignUpPage> {
                     style: TextStyles.errorMessages(),
                   ),
                 ),
-              
-              // Campo de texto para la contraseña
+        
+              //Input de Contraseña
               Padding(
                 padding: const EdgeInsets.only(
                   top: 20,
@@ -185,7 +185,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
               ),
 
-              // Mensaje de error para la contraseña no segura
+              // Contraseña no segura
               if(authProvider.errorPasswordNotSecure)
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -195,8 +195,8 @@ class _SignUpPageState extends State<SignUpPage> {
                     style: TextStyles.errorMessages(),
                   ),
                 ),
-              
-              // Campo de texto para la confirmación de la contraseña
+        
+              //Input de Confirmación de contraseña
               Padding(
                 padding: const EdgeInsets.only(
                   top: 20,
@@ -208,7 +208,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   obscureText: true,
                   maxLength: 30,
                   decoration: InputDecoration(
-                    labelText: 'Confirmar Contraseña',
+                    labelText: 'Cofirmar Contraseña',
                     labelStyle: TextStyles.placeholderForTextFields(),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20.0),
@@ -217,7 +217,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
               ),
 
-              // Mensaje de error para contraseñas que no coinciden
+              // Contraseñas no coinciden
               if(authProvider.errorPasswordDontMatch)
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -227,8 +227,8 @@ class _SignUpPageState extends State<SignUpPage> {
                     style: TextStyles.errorMessages(),
                   ),
                 ),
-              
-              // Mensaje de error general
+        
+              //Mensaje de Error
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: Text(
@@ -236,19 +236,21 @@ class _SignUpPageState extends State<SignUpPage> {
                   authProvider.errorMessage,
                   style: TextStyles.errorMessages(),
                 ),
-              ),
-            
-              // Botón de registro
+              ),            
+        
+              //Botón de SignUp
               Padding(
                 padding: const EdgeInsets.only(top: 20),
                 child: ElevatedButton(
+                
                   style: ButtonStyles.primaryButton(),
                   child: Text(
                     'Registrarse',
                     style: TextStyles.buttonTexts(),
+                    
                   ),
                   onPressed: () async {
-                    // Intenta registrar al usuario
+                    
                     bool registered = await authProvider.signup(
                       _cedulaController.text,
                       _nameController.text,
@@ -257,7 +259,6 @@ class _SignUpPageState extends State<SignUpPage> {
                       _confirmPasswordController.text
                     );
                     if (registered) {
-                      // Muestra un diálogo de éxito
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
@@ -278,29 +279,36 @@ class _SignUpPageState extends State<SignUpPage> {
                         },
                       );
                     }
-
-                    setState(() {});
+                
+                    setState(() {
+                      
+                    });
+                
                   },
                 ),
               ),
-              
-              // Botón de cancelar
+        
+              //Boton de back
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 15),
                 child: ElevatedButton(
+                
                   style: ButtonStyles.primaryButton(backgroundColor: const Color.fromARGB(255, 143, 50, 50)),
                   child: Text(
                     'Cancelar',
                     style: TextStyles.buttonTexts(color: Colors.white),
+                    
                   ),
                   onPressed: () {
-                    authProvider.clearErrorMessage(); // Limpia el mensaje de error
-                    authProvider.clearErrors(); // Limpia los errores
-                    Navigator.pushNamed(context, '/login'); // Navega a la página de inicio de sesión
+                    authProvider.clearErrorMessage();
+                    authProvider.clearErrors();
+                    Navigator.pushNamed(context, '/login');
                   },
                 ),
               ),
-
+        
+              
+        
             ],
           ),
         ),

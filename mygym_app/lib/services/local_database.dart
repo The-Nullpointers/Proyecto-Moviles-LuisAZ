@@ -1,5 +1,3 @@
-// ignore_for_file: empty_catches
-
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:mygym_app/models/current_user.dart';
@@ -45,7 +43,6 @@ class LocalDatabase {
         await isar.currentUsers.put(currentUser);
       });
 
-    // Ignorar catches vacíos
     } catch (e) {
       
     }
@@ -55,8 +52,7 @@ class LocalDatabase {
     final isar = await db;
     try {
 
-// Debe haber solo 1 usuario  actual
-
+      //Debe haber solo 1 usuario  actual
       final currentUser = await isar.currentUsers.where().findFirst();
       if (currentUser != null) {
         return currentUser.jwt;
@@ -74,7 +70,9 @@ class LocalDatabase {
       await isar.writeTxn(() async {
         await isar.currentUsers.clear();
       });
+      print('User logged out and data cleared.');
     } catch (e) {
+      print('Error during logout: $e');
     }
   } 
 
@@ -83,7 +81,6 @@ class LocalDatabase {
     try {
 
       //Debe haber solo 1 usuario  actual
-      
       final currentUser = await isar.currentUsers.where().findFirst();
       if (currentUser != null) {
         return currentUser.username;
@@ -99,8 +96,7 @@ class LocalDatabase {
     final isar = await db;
     try {
 
-//Debe haber solo 1 usuario  actual
-
+      //Debe haber solo 1 usuario  actual
       final currentUser = await isar.currentUsers.where().findFirst();
       if (currentUser != null) {
         return currentUser.role;

@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:mygym_app/config/text_styles.dart';
+import 'package:mygym_app/models/current_user.dart';
 import 'package:mygym_app/models/user.dart';
 import 'package:mygym_app/providers/attendance_provider.dart';
 import 'package:provider/provider.dart';
@@ -8,7 +9,7 @@ import 'package:provider/provider.dart';
 class AttendanceClientCard extends StatefulWidget {
   final User user;
 
-  const AttendanceClientCard({super.key, required this.user});
+  const AttendanceClientCard({Key? key, required this.user}) : super(key: key);
 
   @override
   State<AttendanceClientCard> createState() => _AttendanceClientCardState();
@@ -39,9 +40,7 @@ class _AttendanceClientCardState extends State<AttendanceClientCard> {
   @override
   Widget build(BuildContext context) {
     final attendanceProvider = context.read<AttendanceProvider>();
-    
-// Card que permite modificar la asistencia de cada cliente
-    
+
     return Card(
       color: cardColor,
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),

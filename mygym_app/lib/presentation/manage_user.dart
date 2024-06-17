@@ -7,7 +7,7 @@ import 'package:mygym_app/models/user.dart';
 import 'package:mygym_app/providers/user_provider.dart';
 
 class ManageClientPage extends StatefulWidget {
-  const ManageClientPage({super.key});
+  const ManageClientPage({Key? key}) : super(key: key);
 
   @override
   State<ManageClientPage> createState() => _ManageClientPageState();
@@ -23,18 +23,16 @@ class _ManageClientPageState extends State<ManageClientPage> {
   bool _blocked = false;
   String errorMessage = "";
 
-  String? _selectedRole; // Nuevo: para almacenar el valor seleccionado del desplegable
+  String? _selectedRole; // New: to store selected dropdown value
 
   @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
 
-    // Obtener los argumentos pasados a la página
     final args = ModalRoute.of(context)!.settings.arguments;
     if (args != null && args is User) {
       currentUser = args;
     } else {
-      // Si no se proporciona un usuario, crea uno nuevo
       currentUser = User(
         id: "",
         username: '',
@@ -48,7 +46,6 @@ class _ManageClientPageState extends State<ManageClientPage> {
       );
     }
 
-    // Configurar los controladores de texto con los datos del usuario
     _usernameController.text = currentUser.username;
     _emailController.text = currentUser.email;
     _cedulaController.text = currentUser.cedula;
@@ -56,6 +53,7 @@ class _ManageClientPageState extends State<ManageClientPage> {
     _blocked = currentUser.blocked;
 
     _selectedRole = currentUser.role;
+    print("USER ROLE 11111: $_selectedRole");
   }
 
   @override
@@ -133,10 +131,11 @@ class _ManageClientPageState extends State<ManageClientPage> {
               ),
               const SizedBox(height: 20),
 
-              // Nuevo: Botón desplegable
+              // New: Dropdown Button
               DropdownButtonFormField<String>(
+                
                 value: _selectedRole,
-                hint: const Text("Seleccione un rol"),
+                hint: Text("Seleccione un rol"),
                 decoration: InputDecoration(
                   labelText: 'Rol',
                   labelStyle: TextStyles.placeholderForTextFields(),
@@ -145,6 +144,7 @@ class _ManageClientPageState extends State<ManageClientPage> {
                   ),
                 ),
                 onChanged: (String? value) {
+                  print("USER ROLE: $_selectedRole");
                   setState(() {
                     _selectedRole = value;
                     currentUser.role = _selectedRole;
@@ -170,12 +170,11 @@ class _ManageClientPageState extends State<ManageClientPage> {
                 ),
                 onPressed: () async {
                   if (currentUser.id == "") {
-                    // Crear nuevo usuario
                     if (validateAllInputs()) {
                       bool result = await userProvider.createUser(
                           currentUser,
                           await localStorageProvider.getCurrentUserJWT());
-
+              
                       if (result) {
                         errorMessage = "";
                         showDialog(
@@ -204,12 +203,11 @@ class _ManageClientPageState extends State<ManageClientPage> {
                       setState(() {});
                     }
                   } else {
-                    // Modificar usuario existente
                     if (validateAllInputs()) {
                       bool result = await userProvider.updateUser(
                           currentUser,
                           await localStorageProvider.getCurrentUserJWT());
-
+              
                       if (result) {
                         errorMessage = "";
                         showDialog(
@@ -244,7 +242,7 @@ class _ManageClientPageState extends State<ManageClientPage> {
               ),
               if (currentUser.id != "")
 
-                const SizedBox(height: 20),
+                const SizedBox(height: 20,),
 
               if (currentUser.id != "")
                 Padding(
@@ -312,7 +310,6 @@ class _ManageClientPageState extends State<ManageClientPage> {
     );
   }
 
-  // Valida todos los campos de entrada
   bool validateAllInputs() {
     if (_usernameController.text.isEmpty ||
         _emailController.text.isEmpty ||
@@ -321,7 +318,9 @@ class _ManageClientPageState extends State<ManageClientPage> {
       setState(() {});
       return false;
     }
-    
+
+    // Add any additional validation logic here
+
     return true;
   }
 }
