@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ButtonStyles {
+  // Estilo para botón primario
   static ButtonStyle primaryButton({
     Color? backgroundColor,
     Color? foregroundColor,
@@ -19,6 +20,7 @@ class ButtonStyles {
     );
   }
 
+  // Estilo para botón secundario
   static ButtonStyle secondaryButton({
     Color? backgroundColor,
     Color? foregroundColor,
@@ -37,6 +39,7 @@ class ButtonStyles {
     );
   }
 
+  // Estilo para botón de peligro
   static ButtonStyle dangerButton({
     Color? backgroundColor,
     Color? foregroundColor,
@@ -55,6 +58,7 @@ class ButtonStyles {
     );
   }
 
+  // Estilo para botón de éxito
   static ButtonStyle successButton({
     Color? backgroundColor,
     Color? foregroundColor,
@@ -73,6 +77,7 @@ class ButtonStyles {
     );
   }
 
+  // Decoración para el campo de selección desplegable
   static InputDecoration dropdownDecoration({
     Color? backgroundColor,
     Color? foregroundColor,

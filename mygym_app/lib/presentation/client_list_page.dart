@@ -17,47 +17,44 @@ class ClientListPage extends StatefulWidget {
 }
 
 class _ClientListPageState extends State<ClientListPage> {
-  String? currentUserRole;
-  String? currentUserUsername;
-  List<User> users = [];
-  late ScrollController _scrollController;
-  bool isLoading = true;
+  String? currentUserRole; // Variable para almacenar el rol del usuario actual
+  String? currentUserUsername; // Variable para almacenar el nombre de usuario actual
+  List<User> users = []; // Lista de usuarios
+  late ScrollController _scrollController; // Controlador para el scroll
+  bool isLoading = true; // Bandera para indicar si los datos están cargando
 
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
 
-    // Fetch data when the widget is initialized
+    // Obtener datos cuando el widget se inicializa
     WidgetsBinding.instance.addPostFrameCallback((_) {
       fetchData();
     });
   }
 
   Future<void> fetchData() async {
+    // Obtener los proveedores necesarios
     final localStorageProvider = context.read<LocalStorageProvider>();
     final courseProvider = context.read<CourseProvider>();
     final attendanceProvider = context.read<AttendanceProvider>();
     final userProvider = context.read<UserProvider>();
 
     try {
+      // Obtener datos del almacenamiento local y otros proveedores
       currentUserRole = await localStorageProvider.getCurrentUserRole();
       currentUserUsername = await localStorageProvider.getCurrentUserUsername();
       await courseProvider.loadcurrentUserEnrolledCoursesList();
       users = await attendanceProvider.getAllUsers(await localStorageProvider.getCurrentUserJWT());
-      for(var user in users){
+      for (var user in users) {
         user.role = await userProvider.getThisUserRole(user, await localStorageProvider.getCurrentUserJWT());
-        print("USER: ${user.username} ROLE: ${user.role}");
       }
-
-      print("Fetched data: ${users.length} users, ${courseProvider.currentUserEnrolledCourses.length} courses");
-
-      // Update the state once data is fetched
+      // Actualizar el estado una vez que los datos se han obtenido
       setState(() {
         isLoading = false;
       });
     } catch (e) {
-      print('Error fetching data: $e');
       setState(() {
         isLoading = false;
       });
@@ -103,7 +100,7 @@ class _ClientListPageState extends State<ClientListPage> {
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          "Panel de Usarios\nUsuario: $currentUserUsername",
+                          "Panel de Usuarios\nUsuario: $currentUserUsername",
                           style: TextStyles.subtitles(),
                         ),
                       ),
@@ -111,12 +108,10 @@ class _ClientListPageState extends State<ClientListPage> {
                     SizedBox(
                       height: 600,
                       width: 400,
-
                       // Lista de Clientes
                       child: Consumer<CourseProvider>(
                         builder: (context, courseProvider, child) {
-                          // Ensure data lengths match
-
+                          // Asegurarse de que las longitudes de los datos coincidan
                           return Scrollbar(
                             controller: _scrollController,
                             thumbVisibility: true,
@@ -137,7 +132,6 @@ class _ClientListPageState extends State<ClientListPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       mainAxisSize: MainAxisSize.max,
                       children: [
-                        
                         Padding(
                           padding: const EdgeInsets.only(bottom: 10),
                           child: SizedBox(

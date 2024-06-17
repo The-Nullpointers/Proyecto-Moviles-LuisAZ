@@ -41,9 +41,6 @@ class User {
 
   Map<String, dynamic> toJson() {
     if(role == null){
-
-      print("NO USER ROLE");
-
       return {
         'id': id,
         'username': username,
@@ -58,7 +55,6 @@ class User {
 
     } 
 
-    print("YES USER ROLE: ${role}");
 
     int roleId = 1;
     if(role == "Administrator"){

@@ -16,10 +16,9 @@ class AdminPage extends StatefulWidget {
 }
 
 class _AdminPageState extends State<AdminPage> {
-
-  String? currentUserRole;
-  String? currentUserUsername;
-  late ScrollController _scrollController;
+  String? currentUserRole; // Variable para almacenar el rol del usuario actual
+  String? currentUserUsername; // Variable para almacenar el nombre de usuario actual
+  late ScrollController _scrollController; // Controlador para el scroll
 
   @override
   void initState() {
@@ -32,6 +31,7 @@ class _AdminPageState extends State<AdminPage> {
   }
 
   Future<void> getCurrentUserData(LocalStorageProvider localStorageProvider, CourseProvider courseProvider) async {
+    // Obtener datos del almacenamiento local
     currentUserRole = await localStorageProvider.getCurrentUserRole();
     currentUserUsername = await localStorageProvider.getCurrentUserUsername();
     await courseProvider.loadcurrentUserEnrolledCoursesList();
@@ -39,12 +39,10 @@ class _AdminPageState extends State<AdminPage> {
 
   @override
   Widget build(BuildContext context) {
-
-    // Providers ---------------------------------------------
+    // Obtener proveedores
     final authProvider = context.read<AuthProvider>();
     final localStorageProvider = context.read<LocalStorageProvider>();
     final courseProvider = context.read<CourseProvider>();
-    // Providers ---------------------------------------------
 
     return FutureBuilder(
       future: getCurrentUserData(localStorageProvider, courseProvider),
@@ -57,10 +55,7 @@ class _AdminPageState extends State<AdminPage> {
           return Center(child: Text('Error: ${snapshot.error}'));
         }
 
-
-
         return Scaffold(
-          
           appBar: AppBar(
             automaticallyImplyLeading: false,
             backgroundColor: const Color.fromARGB(255, 160, 225, 255),
@@ -69,18 +64,13 @@ class _AdminPageState extends State<AdminPage> {
               style: TextStyles.subtitles(fontSize: 30, fontWeight: FontWeight.w800),
             ),
             actions: [
-
               IconButton(
                 onPressed: () async {
                   await courseProvider.loadcurrentUserEnrolledCoursesList();
-            
-                  setState(() {
-                    
-                  });
+                  setState(() {});
                 },
                 icon: const Icon(Icons.refresh_rounded),
               ),
-
               IconButton(
                 onPressed: () async {
                   await authProvider.logout();
@@ -92,17 +82,12 @@ class _AdminPageState extends State<AdminPage> {
               ),
             ],
           ),
-
           body: SingleChildScrollView(
             child: Center(
-
-              
-              
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-
                   Padding(
                     padding: const EdgeInsets.only(
                       top: 20,
@@ -117,16 +102,12 @@ class _AdminPageState extends State<AdminPage> {
                       ),
                     ),
                   ),
-
                   SizedBox(
                     height: 600,
                     width: 400,
-
-                    
-
                     // Lista de Cursos
-                    child: Consumer<CourseProvider>( // Consumer para que esté atento a cambios en
-                      builder: (context, courseProvider, child) { // los cursosy se actualice solo
+                    child: Consumer<CourseProvider>(
+                      builder: (context, courseProvider, child) {
                         return Scrollbar(
                           controller: _scrollController,
                           thumbVisibility: true, 
@@ -142,8 +123,7 @@ class _AdminPageState extends State<AdminPage> {
                       },
                     ),
                   ),
-
-                  const SizedBox(height: 20,),
+                  const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     mainAxisSize: MainAxisSize.max,
@@ -156,7 +136,7 @@ class _AdminPageState extends State<AdminPage> {
                               backgroundColor: const Color.fromARGB(255, 23, 245, 138),
                             ),
                             onPressed: () async {
-
+                              // Crear un nuevo curso vacío
                               Course currentCourse = Course(
                                 id: "",
                                 name: '',
@@ -164,9 +144,8 @@ class _AdminPageState extends State<AdminPage> {
                                 schedule: DateTime.now(),
                                 usersEnrolled: [],
                               );
-                              
+                              // Navegar a la página de gestión de curso
                               Navigator.pushNamed(context, '/manageCourse', arguments: currentCourse);
-                              
                             },
                             child: Text(
                               'Nuevo Curso',
@@ -175,18 +154,16 @@ class _AdminPageState extends State<AdminPage> {
                           ),
                         ),
                       ),
-
                       Padding(
-                        padding: const EdgeInsets.only(bottom: 10, ),
+                        padding: const EdgeInsets.only(bottom: 10),
                         child: SizedBox(
                           child: ElevatedButton(
                             style: ButtonStyles.primaryButton(
                               backgroundColor: const Color.fromARGB(255, 0, 96, 131)
                             ),
                             onPressed: () async {
-                              
+                              // Navegar a la página de lista de clientes
                               Navigator.pushNamed(context, '/clientList');
-                              
                             },
                             child: Text(
                               'Ver Clientes',
@@ -197,11 +174,6 @@ class _AdminPageState extends State<AdminPage> {
                       ),
                     ],
                   ),
-
-
-
-
-                  
                 ],
               ),
             ),

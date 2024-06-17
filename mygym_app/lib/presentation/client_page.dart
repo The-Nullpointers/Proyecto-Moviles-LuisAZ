@@ -15,10 +15,9 @@ class ClientPage extends StatefulWidget {
 }
 
 class _ClientPageState extends State<ClientPage> {
-
-  String? currentUserRole;
-  String? currentUserUsername;
-  late ScrollController _scrollController;
+  String? currentUserRole; // Variable para almacenar el rol del usuario actual
+  String? currentUserUsername; // Variable para almacenar el nombre de usuario actual
+  late ScrollController _scrollController; // Controlador para el scroll
 
   @override
   void initState() {
@@ -31,19 +30,20 @@ class _ClientPageState extends State<ClientPage> {
   }
 
   Future<void> getCurrentUserData(LocalStorageProvider localStorageProvider, CourseProvider courseProvider) async {
+    // Obtener el rol y nombre de usuario actual desde el almacenamiento local
     currentUserRole = await localStorageProvider.getCurrentUserRole();
     currentUserUsername = await localStorageProvider.getCurrentUserUsername();
+    // Cargar la lista de cursos en los que el usuario está inscrito
     await courseProvider.loadcurrentUserEnrolledCoursesList();
   }
 
   @override
   Widget build(BuildContext context) {
-
-    // Providers ---------------------------------------------
+    // Proveedores ---------------------------------------------
     final authProvider = context.read<AuthProvider>();
     final localStorageProvider = context.read<LocalStorageProvider>();
     final courseProvider = context.read<CourseProvider>();
-    // Providers ---------------------------------------------
+    // Proveedores ---------------------------------------------
 
     return FutureBuilder(
       future: getCurrentUserData(localStorageProvider, courseProvider),
@@ -56,10 +56,7 @@ class _ClientPageState extends State<ClientPage> {
           return Center(child: Text('Error: ${snapshot.error}'));
         }
 
-
-
         return Scaffold(
-
           appBar: AppBar(
             automaticallyImplyLeading: false,
             backgroundColor: const Color.fromARGB(255, 160, 225, 255),
@@ -74,16 +71,12 @@ class _ClientPageState extends State<ClientPage> {
               ),
             ],
           ),
-
-
           body: SingleChildScrollView(
             child: Center(
-              
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-
                   Padding(
                     padding: const EdgeInsets.only(
                       top: 20,
@@ -98,7 +91,6 @@ class _ClientPageState extends State<ClientPage> {
                       ),
                     ),
                   ),
-
                   SizedBox(
                     height: 600,
                     width: 400,
@@ -116,8 +108,6 @@ class _ClientPageState extends State<ClientPage> {
                       ),
                     ),
                   ),
-
-
                   Row(
                     children: [
                       Padding(
@@ -127,11 +117,9 @@ class _ClientPageState extends State<ClientPage> {
                             backgroundColor: const Color.fromARGB(255, 0, 96, 131),
                           ),
                           onPressed: () async {
+                            // Refrescar la lista de cursos en los que el usuario está inscrito
                             await courseProvider.loadcurrentUserEnrolledCoursesList();
-                      
-                            setState(() {
-                              
-                            });
+                            setState(() {});
                           },
                           child: Text(
                             'Refrescar Cursos',
@@ -139,7 +127,6 @@ class _ClientPageState extends State<ClientPage> {
                           ),
                         ),
                       ),
-
                       Padding(
                         padding: const EdgeInsets.only(top: 20, left: 20,),
                         child: ElevatedButton(
@@ -147,6 +134,7 @@ class _ClientPageState extends State<ClientPage> {
                             backgroundColor: const Color.fromARGB(255, 237, 59, 19),
                           ),
                           onPressed: () async {
+                            // Cerrar sesión
                             await authProvider.logout();
                             if (authProvider.jwt == null) {
                               Navigator.pushReplacementNamed(context, '/login');
@@ -160,7 +148,6 @@ class _ClientPageState extends State<ClientPage> {
                       ),
                     ],
                   ),
-
                 ],
               ),
             ),
