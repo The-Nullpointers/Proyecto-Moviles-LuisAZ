@@ -16,14 +16,14 @@ class _ManageCoursePageState extends State<ManageCoursePage> {
   late Course currentCourse;
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _capacityController = TextEditingController();
-  late TextEditingController _dateController;
-  late TextEditingController _timeController;
+  final TextEditingController _dateController = TextEditingController();
+  final TextEditingController _timeController = TextEditingController();
   String errorMessage = "";
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    
+
     final args = ModalRoute.of(context)!.settings.arguments;
     if (args != null && args is Course) {
       currentCourse = args;
@@ -37,20 +37,21 @@ class _ManageCoursePageState extends State<ManageCoursePage> {
       );
     }
 
-    _dateController = TextEditingController(
-      text: "${currentCourse.schedule.year}-${currentCourse.schedule.month.toString().padLeft(2, '0')}-${currentCourse.schedule.day.toString().padLeft(2, '0')}");
-    _timeController = TextEditingController(
-      text: "${currentCourse.schedule.hour.toString().padLeft(2, '0')}:${currentCourse.schedule.minute.toString().padLeft(2, '0')}");
+    _initializeControllers();
+  }
 
-
+  void _initializeControllers() {
+    _nameController.text = currentCourse.name;
+    _capacityController.text = currentCourse.capacity.toString();
+    _dateController.text =
+        "${currentCourse.schedule.year}-${currentCourse.schedule.month.toString().padLeft(2, '0')}-${currentCourse.schedule.day.toString().padLeft(2, '0')}";
+    _timeController.text =
+        "${currentCourse.schedule.hour.toString().padLeft(2, '0')}:${currentCourse.schedule.minute.toString().padLeft(2, '0')}";
   }
 
   @override
   Widget build(BuildContext context) {
     final courseProvider = context.read<CourseProvider>();
-
-    _nameController.text = currentCourse.name;
-    _capacityController.text = currentCourse.capacity.toString();
 
     return Scaffold(
       appBar: AppBar(
@@ -60,26 +61,21 @@ class _ManageCoursePageState extends State<ManageCoursePage> {
           "*Null's Gym",
           style: TextStyles.subtitles(fontSize: 30, fontWeight: FontWeight.w800),
         ),
-        
       ),
       body: Padding(
-        
         padding: const EdgeInsets.all(20.0),
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              
               Text(
                 currentCourse.id != "" ? "Modificar Curso" : "Crear Curso",
                 style: TextStyles.titles(),
               ),
               const SizedBox(height: 20),
               TextFormField(
-                
                 controller: _nameController,
                 decoration: InputDecoration(
-                  
                   labelText: 'Nombre del Curso',
                   labelStyle: TextStyles.placeholderForTextFields(),
                   border: OutlineInputBorder(
@@ -87,15 +83,11 @@ class _ManageCoursePageState extends State<ManageCoursePage> {
                   ),
                 ),
                 onChanged: (value) {
-                  setState(() {
-                    currentCourse.name = value;
-                  });
+                  currentCourse.name = value;
                 },
               ),
-          
               const SizedBox(height: 20),
               TextFormField(
-                
                 controller: _capacityController,
                 decoration: InputDecoration(
                   labelText: 'Capacidad',
@@ -106,12 +98,10 @@ class _ManageCoursePageState extends State<ManageCoursePage> {
                 ),
                 keyboardType: TextInputType.number,
                 onChanged: (value) {
-                  setState(() {
-                    currentCourse.capacity = int.tryParse(value) ?? 0;
-                  });
+                  currentCourse.capacity = int.tryParse(value) ?? 0;
                 },
               ),
-          
+
               const SizedBox(height: 20),
               TextFormField(
                 controller: _dateController,
@@ -144,8 +134,8 @@ class _ManageCoursePageState extends State<ManageCoursePage> {
                     });
                   }
                 },
+
               ),
-          
               const SizedBox(height: 20),
               TextFormField(
                 controller: _timeController,
@@ -173,6 +163,7 @@ class _ManageCoursePageState extends State<ManageCoursePage> {
                       );
                       _timeController.text =
                           "${pickedTime.hour.toString().padLeft(2, '0')}:${pickedTime.minute.toString().padLeft(2, '0')}";
+                      
                     });
                   }
                 },
@@ -190,120 +181,110 @@ class _ManageCoursePageState extends State<ManageCoursePage> {
                       backgroundColor: const Color.fromARGB(255, 0, 96, 131),
                     ),
                     onPressed: () async {
-
-                      //Crear curso
-                      if(currentCourse.id == ""){
-                        if(validateAllInputs()){
-
+                      if (currentCourse.id == "") {
+                        if (validateAllInputs()) {
                           bool result = await courseProvider.createCourse(
                               _nameController.text,
                               _capacityController.text,
-                              _dateController.text, 
-                              _timeController.text
-                            );
-            
-                          if(result){
+                              _dateController.text,
+                              _timeController.text);
+
+                          if (result) {
                             errorMessage = "";
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
                                   title: const Text('Éxito'),
-                                  content: Text('El curso ${_nameController.text} ha sido creado correctamente'),
+                                  content: Text(
+                                      'El curso ${_nameController.text} ha sido creado correctamente'),
                                   icon: const Icon(Icons.check),
                                   actions: <Widget>[
                                     TextButton(
                                       onPressed: () async {
-                                        await courseProvider.loadcurrentUserEnrolledCoursesList();
+                                        await courseProvider
+                                            .loadcurrentUserEnrolledCoursesList();
                                         Navigator.of(context).pop();
                                         Navigator.of(context).pop();
                                         setState(() {});
                                       },
                                       child: const Text('Listo'),
                                     ),
-                                    
-                                    
                                   ],
                                 );
                               },
                             );
-                            
                           }
-                          
-                        } else { setState(() {}); }
-                      } else { //Modificar Curso
-                      
-                        if(validateAllInputs()){
+                        } else {
+                          setState(() {});
+                        }
+                      } else {
+                        if (validateAllInputs()) {
                           bool result = await courseProvider.updateCourse(
                               _nameController.text,
                               _capacityController.text,
-                              _dateController.text, 
+                              _dateController.text,
                               _timeController.text,
-                              int.parse(currentCourse.id)
-                            );
-            
-                          if(result){
+                              int.parse(currentCourse.id));
+
+                          if (result) {
                             errorMessage = "";
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
                                   title: const Text('Éxito'),
-                                  content: Text('El curso ${_nameController.text} se ha actualizado'),
+                                  content: Text(
+                                      'El curso ${_nameController.text} se ha actualizado'),
                                   icon: const Icon(Icons.check),
                                   actions: <Widget>[
                                     TextButton(
                                       onPressed: () async {
-                                        await courseProvider.loadcurrentUserEnrolledCoursesList();
+                                        await courseProvider
+                                            .loadcurrentUserEnrolledCoursesList();
                                         Navigator.of(context).pop();
                                         Navigator.of(context).pop();
                                         setState(() {});
                                       },
                                       child: const Text('Listo'),
                                     ),
-                                    
-                                    
                                   ],
                                 );
                               },
                             );
-                            
                           }
                         }
                       }
-
-                      
-                      
-                      
                     },
                     child: Text(
                       currentCourse.id != "" ? "Modificar Curso" : "Crear Curso",
                       style: TextStyles.buttonTexts(),
                     ),
                   ),
-                  
-          
-                  if(currentCourse.id != "")
+                  if (currentCourse.id != "")
                     Padding(
                       padding: const EdgeInsets.only(left: 20),
                       child: ElevatedButton(
                         style: ButtonStyles.primaryButton(
-                          backgroundColor: const Color.fromARGB(255, 159, 25, 25),
+                          backgroundColor:
+                              const Color.fromARGB(255, 159, 25, 25),
                         ),
-                      
                         onPressed: () async {
-                          if (currentCourse.id != "" && await courseProvider.deleteCourse(currentCourse)) {
+                          if (currentCourse.id != "" &&
+                              await courseProvider.deleteCourse(currentCourse)) {
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
                                   title: const Text('Éxito'),
-                                  content: Text('El curso ${currentCourse.name} ha sido eliminado correctamente'),
+                                  content: Text(
+                                      'El curso ${currentCourse.name} ha sido eliminado correctamente'),
                                   icon: const Icon(Icons.check),
                                   actions: <Widget>[
                                     TextButton(
                                       onPressed: () async {
-                                        await courseProvider.loadcurrentUserEnrolledCoursesList();
+                                        await courseProvider
+                                            .loadcurrentUserEnrolledCoursesList();
                                         Navigator.of(context).pop();
                                         Navigator.of(context).pop();
                                         setState(() {});
@@ -314,7 +295,10 @@ class _ManageCoursePageState extends State<ManageCoursePage> {
                                 );
                               },
                             );
-                          } else { errorMessage = courseProvider.errorMessage; setState(() {});}
+                          } else {
+                            errorMessage = courseProvider.errorMessage;
+                            setState(() {});
+                          }
                         },
                         child: Text(
                           'Borrar Curso',
@@ -324,16 +308,17 @@ class _ManageCoursePageState extends State<ManageCoursePage> {
                     ),
                 ],
               ),
-
-              SizedBox(height: 20,),
-
-              if(currentCourse.id != "")
-                
+              const SizedBox(
+                height: 20,
+              ),
+              if (currentCourse.id != "")
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ElevatedButton(
-                      style: ButtonStyles.primaryButton(backgroundColor: Color.fromARGB(255, 17, 98, 59)),
+                      style: ButtonStyles.primaryButton(
+                          backgroundColor:
+                              const Color.fromARGB(255, 17, 98, 59)),
                       onPressed: () {
                         Navigator.pushNamed(
                           context,
@@ -341,11 +326,14 @@ class _ManageCoursePageState extends State<ManageCoursePage> {
                           arguments: currentCourse,
                         );
                       },
-                      child: Text('Matricular Cliente', style: TextStyles.buttonTexts(fontSize: 16, color: Colors.white)),
+                      child: Text('Matricular Cliente',
+                          style: TextStyles.buttonTexts(
+                              fontSize: 16, color: Colors.white)),
                     ),
-
                     ElevatedButton(
-                      style: ButtonStyles.primaryButton(backgroundColor: Color.fromARGB(255, 159, 25, 25)),
+                      style: ButtonStyles.primaryButton(
+                          backgroundColor:
+                              const Color.fromARGB(255, 159, 25, 25)),
                       onPressed: () {
                         Navigator.pushNamed(
                           context,
@@ -353,12 +341,12 @@ class _ManageCoursePageState extends State<ManageCoursePage> {
                           arguments: currentCourse,
                         );
                       },
-                      child: Text('Dar Cliente de Baja', style: TextStyles.buttonTexts(fontSize: 16, color: Colors.white)),
+                      child: Text('Dar Cliente de Baja',
+                          style: TextStyles.buttonTexts(
+                              fontSize: 16, color: Colors.white)),
                     ),
                   ],
                 ),
-              
-          
               const SizedBox(height: 20),
               ElevatedButton(
                 style: ButtonStyles.primaryButton(
@@ -380,24 +368,21 @@ class _ManageCoursePageState extends State<ManageCoursePage> {
     );
   }
 
-  bool validateAllInputs(){
-
-    if(_nameController.text.isEmpty || _dateController.text.isEmpty || _timeController.text.isEmpty){
-      
+  bool validateAllInputs() {
+    if (_nameController.text.isEmpty ||
+        _dateController.text.isEmpty ||
+        _timeController.text.isEmpty) {
       errorMessage = "(!) Todos los espacios deben estar completos";
       setState(() {});
       return false;
     }
 
-    if(int.parse(_capacityController.text) <= 0){
+    if (int.parse(_capacityController.text) <= 0) {
       errorMessage = "(!) La capacidad debe ser mayor a 0";
       setState(() {});
       return false;
-    } 
-
+    }
 
     return true;
   }
-
-
 }

@@ -16,7 +16,7 @@ class AttendanceClientCard extends StatefulWidget {
 
 class _AttendanceClientCardState extends State<AttendanceClientCard> {
   final List<String> _items = ["Presente", "Ausente"];
-  String? _selectedItem;
+  String? _selectedItem = "Ausente";
 
   final List<Color> colors = [
     Colors.teal.shade100,

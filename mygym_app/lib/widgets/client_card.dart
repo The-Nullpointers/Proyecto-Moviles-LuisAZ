@@ -2,7 +2,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:mygym_app/config/button_styles.dart';
 import 'package:mygym_app/config/text_styles.dart';
-import 'package:mygym_app/models/current_user.dart';
 import 'package:mygym_app/models/user.dart';
 import 'package:mygym_app/providers/attendance_provider.dart';
 import 'package:provider/provider.dart';

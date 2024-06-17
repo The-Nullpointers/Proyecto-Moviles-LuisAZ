@@ -3,6 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mygym_app/presentation/client_list_page.dart';
 import 'package:mygym_app/presentation/enroll_client.dart';
 import 'package:mygym_app/presentation/manage_user.dart';
+import 'package:mygym_app/presentation/qr_page.dart';
 import 'package:mygym_app/presentation/unenroll_client.dart';
 import 'package:mygym_app/providers/attendance_provider.dart';
 import 'package:mygym_app/providers/user_provider.dart';
@@ -61,6 +62,7 @@ class MyApp extends StatelessWidget {
           '/enrollClient': (context) => const EnrollClientPage(),
           '/unenrollClient': (context) => const UnenrollClientPage(),
           '/clientList': (context) => const ClientListPage(),
+          '/qr': (context) => const QrPage(),
         },
 
         theme: ThemeData(
