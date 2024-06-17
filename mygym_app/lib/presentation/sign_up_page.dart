@@ -259,7 +259,25 @@ class _SignUpPageState extends State<SignUpPage> {
                       _confirmPasswordController.text
                     );
                     if (registered) {
-                      Navigator.pop(context);
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Éxito'),
+                            content: const Text('Su cuenta ha sido creada'),
+                            icon: const Icon(Icons.check),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () async {
+                                  Navigator.of(context).pop();
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('Aceptar'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
                     }
                 
                     setState(() {

@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:mygym_app/config/button_styles.dart';
 import 'package:mygym_app/config/text_styles.dart';
+import 'package:mygym_app/models/current_user.dart';
 import 'package:mygym_app/models/user.dart';
 import 'package:mygym_app/providers/attendance_provider.dart';
 import 'package:provider/provider.dart';
@@ -8,15 +10,13 @@ import 'package:provider/provider.dart';
 class ClientCard extends StatefulWidget {
   final User user;
 
-  const ClientCard({Key? key, required this.user}) : super(key: key);
+  const ClientCard({super.key, required this.user});
 
   @override
   State<ClientCard> createState() => _ClientCardState();
 }
 
 class _ClientCardState extends State<ClientCard> {
-  final List<String> _items = ["Presente", "Ausente"];
-  String? _selectedItem;
 
   final List<Color> colors = [
     Colors.teal.shade100,
@@ -45,8 +45,6 @@ class _ClientCardState extends State<ClientCard> {
     final attendanceProvider = context.read<AttendanceProvider>();
     //Providers ---------------------------------------------
 
-    attendanceProvider.updateUserAttendanceStatus(widget.user, _selectedItem);
-
     return Card(
       color: cardColor,
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
@@ -71,56 +69,27 @@ class _ClientCardState extends State<ClientCard> {
               "Correo: ${widget.user.email}",
               style: TextStyles.body(),
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Flexible(
-                    child: DropdownButtonFormField<String>(
-                      hint: const Text('Marcar Asistencia'),
-                      value: _selectedItem,
-                      icon: const Icon(Icons.arrow_drop_down),
-                      iconSize: 24,
-                      elevation: 16,
-                      style: TextStyles.subtitles(color: Colors.black),
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: _selectedItem == "Presente"
-                            ? Colors.green.shade300
-                            : _selectedItem == "Ausente"
-                                ? Colors.red.shade300
-                                : Colors.white,
-                        contentPadding: const EdgeInsets.symmetric(
-                          vertical: 8.0,
-                          horizontal: 12.0,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
-                      onChanged: (String? newValue) async {
-                        await attendanceProvider.updateUserAttendanceStatus(widget.user, newValue);
-                        setState(() {
-                          _selectedItem = newValue!;
-                          
-                        });
-                      },
-                      items: _items.map<DropdownMenuItem<String>>(
-                        (String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        },
-                      ).toList(),
-                    ),
-                  ),
-                ],
-              ),
+
+            const SizedBox(height: 20,),
+            
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                ElevatedButton(
+                  style: ButtonStyles.primaryButton(backgroundColor: Color.fromARGB(255, 159, 25, 25)),
+                  onPressed: () {
+                    Navigator.pushNamed(
+                      context,
+                      '/manageClient',
+                      arguments: widget.user,
+                    );
+                  },
+                  child: Text('Administrar Cliente', style: TextStyles.buttonTexts(fontSize: 16,color: Colors.white)),
+                ),
+              ],
             ),
+            
           ],
         ),
       ),

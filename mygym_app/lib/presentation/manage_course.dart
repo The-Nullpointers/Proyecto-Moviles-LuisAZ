@@ -325,8 +325,10 @@ class _ManageCoursePageState extends State<ManageCoursePage> {
                 ],
               ),
 
+              SizedBox(height: 20,),
+
               if(currentCourse.id != "")
-                SizedBox(height: 20,),
+                
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -339,7 +341,7 @@ class _ManageCoursePageState extends State<ManageCoursePage> {
                           arguments: currentCourse,
                         );
                       },
-                      child: Text('Matricular Cliente', style: TextStyles.buttonTexts(fontSize: 15, color: Colors.white)),
+                      child: Text('Matricular Cliente', style: TextStyles.buttonTexts(fontSize: 16, color: Colors.white)),
                     ),
 
                     ElevatedButton(
@@ -351,7 +353,7 @@ class _ManageCoursePageState extends State<ManageCoursePage> {
                           arguments: currentCourse,
                         );
                       },
-                      child: Text('Desmatricular Cliente', style: TextStyles.buttonTexts(fontSize: 15, color: Colors.white)),
+                      child: Text('Dar Cliente de Baja', style: TextStyles.buttonTexts(fontSize: 16, color: Colors.white)),
                     ),
                   ],
                 ),
