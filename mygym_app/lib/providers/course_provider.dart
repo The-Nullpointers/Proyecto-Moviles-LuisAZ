@@ -195,7 +195,7 @@ class CourseProvider extends ChangeNotifier {
   }
 
   // Método para desinscribir un usuario de un curso.
-  Future<void> unenrolledUserFromCourse(User user, Course course, String? jwtToken) async {
+  Future<void> unenrollUserFromCourse(User user, Course course, String? jwtToken) async {
     final url = '$baseUrl/api/courses';
 
     try {

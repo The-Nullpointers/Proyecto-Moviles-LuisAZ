@@ -17,13 +17,13 @@ class EnrollClientPage extends StatefulWidget {
 
 class _EnrollClientPageState extends State<EnrollClientPage> {
   late Course currentCourse;
-  List<User> usersNotEnrrolled = [];
+  List<User> usersNotEnrolled = [];
   late AttendanceProvider attendanceProvider;
   late LocalStorageProvider localStorageProvider;
   List<String> items = [];
   late Future<void> fetchFuture;
   bool isInitialized = false;
-  String? selectedItem; // Initialize selectedItem as nullable
+  String? selectedItem; // Inicializar selectedItem como nullable
 
   @override
   void didChangeDependencies() {
@@ -52,11 +52,10 @@ class _EnrollClientPageState extends State<EnrollClientPage> {
 
   Future<void> fetchUsersAndItems() async {
     final jwt = await localStorageProvider.getCurrentUserJWT();
-    usersNotEnrrolled = await attendanceProvider.getUsersNotEnrolledInCourse(currentCourse, jwt);
-    
+    usersNotEnrolled = await attendanceProvider.getUsersNotEnrolledInCourse(currentCourse, jwt);
 
     setState(() {
-      items = usersNotEnrrolled
+      items = usersNotEnrolled
           .map((user) => "${user.username} - ${user.cedula}")
           .toList();
     });
@@ -64,7 +63,6 @@ class _EnrollClientPageState extends State<EnrollClientPage> {
 
   @override
   Widget build(BuildContext context) {
-
     String errorMessage = "";
     return Scaffold(
       appBar: AppBar(
@@ -92,12 +90,12 @@ class _EnrollClientPageState extends State<EnrollClientPage> {
                     "Matricular Cliente",
                     style: TextStyles.titles(fontSize: 35),
                   ),
-                  const SizedBox(height: 10,),
+                  const SizedBox(height: 10),
                   Text(
                     currentCourse.name,
                     style: TextStyles.titles(),
                   ),
-                  const SizedBox(height: 10,),
+                  const SizedBox(height: 10),
                   Padding(
                     padding: const EdgeInsets.only(top: 30, bottom: 20, left: 10, right: 10),
                     child: Row(
@@ -127,7 +125,6 @@ class _EnrollClientPageState extends State<EnrollClientPage> {
                             onChanged: (String? newValue) {
                               setState(() {
                                 selectedItem = newValue;
-                                print("ITEM CHANGE: $selectedItem");
                               });
                             },
                             items: items.map<DropdownMenuItem<String>>(
@@ -167,10 +164,7 @@ class _EnrollClientPageState extends State<EnrollClientPage> {
                           backgroundColor: const Color.fromARGB(255, 41, 177, 14),
                         ),
                         onPressed: () async {
-                          print("GUARDAR");
-                          if(selectedItem != null){
-
-                          
+                          if (selectedItem != null) {
                             if (await attendanceProvider.enrollClient(selectedItem!, currentCourse, await localStorageProvider.getCurrentUserJWT())) {
                               showDialog(
                                 context: context,
@@ -193,8 +187,9 @@ class _EnrollClientPageState extends State<EnrollClientPage> {
                               );
                             }
                           } else {
-                            errorMessage = "(!) Debe seleccionar un cliente";
-                            setState(() {});
+                            setState(() {
+                              errorMessage = "(!) Debe seleccionar un cliente";
+                            });
                           }
                         },
                         child: Text(

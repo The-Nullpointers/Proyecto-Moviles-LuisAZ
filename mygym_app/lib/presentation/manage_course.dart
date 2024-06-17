@@ -101,7 +101,6 @@ class _ManageCoursePageState extends State<ManageCoursePage> {
                   currentCourse.capacity = int.tryParse(value) ?? 0;
                 },
               ),
-
               const SizedBox(height: 20),
               TextFormField(
                 controller: _dateController,
@@ -134,7 +133,6 @@ class _ManageCoursePageState extends State<ManageCoursePage> {
                     });
                   }
                 },
-
               ),
               const SizedBox(height: 20),
               TextFormField(
@@ -163,7 +161,6 @@ class _ManageCoursePageState extends State<ManageCoursePage> {
                       );
                       _timeController.text =
                           "${pickedTime.hour.toString().padLeft(2, '0')}:${pickedTime.minute.toString().padLeft(2, '0')}";
-                      
                     });
                   }
                 },
