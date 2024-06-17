@@ -5,7 +5,7 @@ import 'package:mygym_app/models/course.dart';
 import 'package:mygym_app/providers/attendance_provider.dart';
 import 'package:mygym_app/providers/course_provider.dart';
 import 'package:mygym_app/providers/local_storage_provider.dart';
-import 'package:mygym_app/widgets/client_card.dart';
+import 'package:mygym_app/widgets/attendance_client_card.dart';
 import 'package:provider/provider.dart';
 
 class CourseClientsPage extends StatefulWidget {
@@ -18,7 +18,7 @@ class CourseClientsPage extends StatefulWidget {
 class _CourseClientsPageState extends State<CourseClientsPage> {
   late Course course;
   final _scrollController = ScrollController();
-  List<ClientCard> _clientCards = [];
+  List<AttendanceClientCard> _clientCards = [];
   
 
   @override
@@ -39,7 +39,7 @@ class _CourseClientsPageState extends State<CourseClientsPage> {
 
     }
 
-    _clientCards = course.usersEnrolled.map((user) => ClientCard(user: user)).toList();
+    _clientCards = course.usersEnrolled.map((user) => AttendanceClientCard(user: user)).toList();
     print("NEW SCREEN --------------------------");
   }
 
@@ -51,7 +51,7 @@ class _CourseClientsPageState extends State<CourseClientsPage> {
     if (newCourse != null) {
       setState(() {
         course = newCourse;
-        _clientCards = course.usersEnrolled.map((user) => ClientCard(user: user)).toList();
+        _clientCards = course.usersEnrolled.map((user) => AttendanceClientCard(user: user)).toList();
       });
     }
   }
@@ -132,7 +132,7 @@ class _CourseClientsPageState extends State<CourseClientsPage> {
                 if (newCourse != null) {
                   setState(() {
                     course = newCourse;
-                    _clientCards = course.usersEnrolled.map((user) => ClientCard(user: user)).toList();
+                    _clientCards = course.usersEnrolled.map((user) => AttendanceClientCard(user: user)).toList();
                   });
                 }
               },

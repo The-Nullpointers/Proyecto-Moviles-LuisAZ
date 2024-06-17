@@ -7,6 +7,8 @@ import 'package:mygym_app/models/course.dart';
 
 class ClientCourseCard extends StatelessWidget {
   final Course course;
+
+  //Para que las cartas tengan colorcitos
   final List<Color> colors = [
     Colors.red.shade100,
     Colors.blue.shade100,
@@ -35,6 +37,11 @@ class ClientCourseCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+
+            //loco esto ve feo
+            // las carttas estan bonitas no joda
+            //solo usted sabe wn
+            //su culo su culo
             Text(
               course.name,
               style: TextStyles.subtitles(fontSize: 20, fontWeight: FontWeight.bold),

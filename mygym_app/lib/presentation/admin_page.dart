@@ -176,11 +176,11 @@ class _AdminPageState extends State<AdminPage> {
                             ),
                             onPressed: () async {
                               
-                              Navigator.pushNamed(context, '/manageCourse');
+                              Navigator.pushNamed(context, '/clientList');
                               
                             },
                             child: Text(
-                              'Nuevo Cliente',
+                              'Ver Clientes',
                               style: TextStyles.buttonTexts(color: Colors.white, fontWeight: FontWeight.bold),
                             ),
                           ),
