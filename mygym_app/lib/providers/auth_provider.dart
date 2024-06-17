@@ -6,26 +6,31 @@ import 'dart:convert';
 
 import 'package:mygym_app/providers/local_storage_provider.dart';
 
+// Proveedor de autenticación que extiende ChangeNotifier para notificar cambios en los datos a los listeners.
 class AuthProvider with ChangeNotifier {
-
+  // Instancia de LocalStorageProvider que será configurada más tarde.
   late LocalStorageProvider localStorageProvider;
 
   final CurrentUser? currentUser = null;
 
+  // Variables de error para varios casos de validación.
   bool _errorEmptyFields = false;
   bool _errorCedula = false;
   bool _errorEmail = false;
   bool _errorPasswordNotSecure = false;
   bool _errorPasswordDontMatch = false;
 
+  // Mensaje de error personalizado.
   String _customErrorMessage = "";
 
+  // URL base de la API, obtenida de variables de entorno.
   String baseUrl = dotenv.env['BASE_URL']!;
   bool _isLoading = false;
   String _errorMessage = '';
   String? _jwt;
   String? _userId;
 
+  // Getters para obtener el estado de carga, mensajes de error, JWT y ID del usuario.
   bool get isLoading => _isLoading;
   String get errorMessage => _errorMessage;
   String? get jwt => _jwt;
@@ -38,15 +43,18 @@ class AuthProvider with ChangeNotifier {
   bool get errorPasswordNotSecure => _errorPasswordNotSecure;
   bool get errorPasswordDontMatch => _errorPasswordDontMatch;
 
-  void setLocalStorageProvider(LocalStorageProvider x){
+  // Método para configurar el LocalStorageProvider.
+  void setLocalStorageProvider(LocalStorageProvider x) {
     localStorageProvider = x;
   }
 
-  void clearErrorMessage(){
+  // Método para limpiar el mensaje de error.
+  void clearErrorMessage() {
     _errorMessage = "";
   }
 
-  void clearErrors(){
+  // Método para limpiar los errores de validación.
+  void clearErrors() {
     _errorEmptyFields = false;
     _errorCedula = false;
     _errorEmail = false;
@@ -54,42 +62,56 @@ class AuthProvider with ChangeNotifier {
     _errorPasswordDontMatch = false;
   }
 
-  
+  // Método para validar si un email es válido.
   bool isThisEmailValid(String email) {
     final emailCheck = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
     return emailCheck.hasMatch(email);
   }
 
+  // Método para validar si una contraseña es segura.
   bool isThisPasswordSecure(String password) {
     String pattern = r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,30}$';
     RegExp regex = RegExp(pattern);
     return regex.hasMatch(password);
   }
 
+  // Método para registrar un nuevo usuario.
   Future<bool> signup(String cedula, String name, String email, String password, String confirmPassword) async {
-
     _customErrorMessage = "";
-    if(cedula.isEmpty || email.isEmpty || password.isEmpty || confirmPassword.isEmpty){
+
+    // Validaciones de los campos del formulario.
+    if (cedula.isEmpty || email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
       _errorEmptyFields = true;
-    } else { _errorEmptyFields = false; }
+    } else {
+      _errorEmptyFields = false;
+    }
 
-    if(!isThisEmailValid(email)){
+    if (!isThisEmailValid(email)) {
       _errorEmail = true;
-    } else { _errorEmail = false; }
+    } else {
+      _errorEmail = false;
+    }
 
-    if(cedula.length != 9 && cedula.length != 12){
+    if (cedula.length != 9 && cedula.length != 12) {
       _errorCedula = true;
-    } else { _errorCedula = false; }
+    } else {
+      _errorCedula = false;
+    }
 
-    if(password != confirmPassword){
+    if (password != confirmPassword) {
       _errorPasswordDontMatch = true;
-    } else { _errorPasswordDontMatch = false; }
+    } else {
+      _errorPasswordDontMatch = false;
+    }
 
-    if(!isThisPasswordSecure(password)){
+    if (!isThisPasswordSecure(password)) {
       _errorPasswordNotSecure = true;
-    } else { _errorPasswordNotSecure = false; }
+    } else {
+      _errorPasswordNotSecure = false;
+    }
 
-    if(_errorCedula || _errorEmail || _errorEmptyFields || _errorPasswordDontMatch || _errorPasswordNotSecure){
+    // Si hay algún error, notificar a los listeners y devolver false.
+    if (_errorCedula || _errorEmail || _errorEmptyFields || _errorPasswordDontMatch || _errorPasswordNotSecure) {
       notifyListeners();
       return false;
     }
@@ -112,23 +134,21 @@ class AuthProvider with ChangeNotifier {
         _customErrorMessage = responseData['error']['message'];
       }
 
-      return false; 
+      return false;
     } catch (e) {
-      return false; 
+      return false;
     }
-
-
   }
 
+  // Método para iniciar sesión.
   Future<void> login(String email, String password) async {
-
     if (email.isEmpty || password.isEmpty) {
       _errorMessage = '(!) Se requiere de usuario y contraseña.';
       notifyListeners();
       return;
     }
 
-    if(!isThisEmailValid(email)){
+    if (!isThisEmailValid(email)) {
       _errorMessage = "(!) Dirección de correo no válida";
       notifyListeners();
       return;
@@ -140,7 +160,7 @@ class AuthProvider with ChangeNotifier {
 
     try {
       final response = await http.post(
-        Uri.parse('$baseUrl/api/auth/local'), 
+        Uri.parse('$baseUrl/api/auth/local'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -150,14 +170,12 @@ class AuthProvider with ChangeNotifier {
         }),
       );
 
-      //Login exitoso
+      // Login exitoso
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseBody = jsonDecode(response.body);
         _jwt = responseBody['jwt'];
 
-        await saveCurrentUserData(jwt);
-
-
+        await saveCurrentUserData(_jwt); // Guardar datos del usuario actual.
 
       } else {
         _errorMessage = '(!) Los credenciales no son correctos';
@@ -170,14 +188,11 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
+  // Método para guardar los datos del usuario actual.
   Future<void> saveCurrentUserData(String? jwt) async {
-    
     final url = Uri.parse('$baseUrl/api/users/me?populate=role');
 
     try {
-
-      print("JWT: $jwt");
-      
       final response = await http.get(
         url,
         headers: {
@@ -185,29 +200,21 @@ class AuthProvider with ChangeNotifier {
         },
       );
 
-      
       if (response.statusCode == 200) {
-            
         final Map<String, dynamic> userData = json.decode(response.body);
 
-        await localStorageProvider.saveCurrentUserData(userData, jwt);
-                
+        await localStorageProvider.saveCurrentUserData(userData, jwt); // Guardar datos del usuario en el almacenamiento local.
       } else {
-        
         throw Exception('Failed to load user data: ${response.statusCode}');
       }
     } catch (e) {
-      
       throw Exception('Failed to load user data: $e');
     }
   }
 
-
-  Future<void> logout() async{
-    await localStorageProvider.logoutCurrentUser();
+  // Método para cerrar sesión.
+  Future<void> logout() async {
+    await localStorageProvider.logoutCurrentUser(); // Eliminar datos del usuario del almacenamiento local.
     _jwt = null;
   }
-
-
-
 }

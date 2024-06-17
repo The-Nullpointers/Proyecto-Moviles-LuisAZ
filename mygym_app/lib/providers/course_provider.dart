@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
@@ -7,27 +6,34 @@ import 'package:mygym_app/models/course.dart';
 import 'package:mygym_app/models/user.dart';
 import 'package:mygym_app/providers/local_storage_provider.dart';
 
+// Proveedor de cursos que extiende ChangeNotifier para notificar cambios en los datos a los listeners.
 class CourseProvider extends ChangeNotifier {
+  // Instancia de LocalStorageProvider que será configurada más tarde.
   late LocalStorageProvider localStorageProvider;
+  // JWT del usuario actual.
   String? currentUserJWT = "";
+  // Mensaje de error.
   String errorMessage = "";
 
+  // URL base de la API, obtenida de variables de entorno.
   String baseUrl = dotenv.env['BASE_URL']!;
+  // Lista de cursos en los que el usuario actual está inscrito.
   List<Course> currentUserEnrolledCourses = [];
 
+  // Método para configurar el LocalStorageProvider.
   Future<void> setLocalStorageProvider(LocalStorageProvider x) async {
     localStorageProvider = x;
-    currentUserJWT = await localStorageProvider.getCurrentUserJWT();
+    currentUserJWT = await localStorageProvider.getCurrentUserJWT(); // Obtener JWT del usuario actual.
   }
 
+  // Método para cargar la lista de cursos en los que el usuario actual está inscrito.
   Future<void> loadcurrentUserEnrolledCoursesList() async {
-    currentUserEnrolledCourses.clear();
+    currentUserEnrolledCourses.clear(); // Limpiar lista actual de cursos.
 
     if (currentUserEnrolledCourses.isEmpty) {
       final url = Uri.parse("$baseUrl/api/courses?populate=users");
 
-      //print("CURRENT USER JWT: $currentUserJWT");
-
+      // Solicitar lista de cursos desde la API.
       final response = await http.get(url, headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $currentUserJWT',
@@ -36,56 +42,52 @@ class CourseProvider extends ChangeNotifier {
       if (response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);
 
-        // Parse courses
+        // Parsear cursos.
         final coursesData = jsonResponse['data'] as List<dynamic>;
         for (var courseData in coursesData) {
           final course = Course.fromJson(courseData);
           currentUserEnrolledCourses.add(course);
         }
 
+        // Filtrar cursos si el usuario no es administrador.
         if (await localStorageProvider.getCurrentUserRole() != "Administrator") {
           filterCoursesByEnrolledUser(await localStorageProvider.getCurrentUserUsername());
         }
 
-        notifyListeners();
+        notifyListeners(); // Notificar cambios a los listeners.
       } else {
         throw Exception('Failed to load courses: ${response.statusCode}');
       }
     }
   }
 
-
+  // Método para filtrar los cursos en los que el usuario actual está inscrito.
   Future<void> filterCoursesByEnrolledUser(String? username) async {
-    print("Filtering courses for user: $username");
 
     if (currentUserEnrolledCourses.isEmpty) {
-      print("No courses available to filter.");
       return;
     }
 
     if (username == null) {
-      print("Username is null. Cannot filter courses.");
       return;
     }
 
-    print("Current courses: ${currentUserEnrolledCourses.length}");
     List<Course> filteredCourses = currentUserEnrolledCourses.where((course) {
       bool userFound = course.usersEnrolled.any((user) => (user).username == username);
-      print("Checking course: ${course.name}, user found: $userFound");
       return userFound;
     }).toList();
 
-    print("Filtered courses: ${filteredCourses.length}");
     currentUserEnrolledCourses = filteredCourses;
     notifyListeners();
   }
 
-  Future<void> clearErrorMessage () async {
+  // Método para limpiar el mensaje de error.
+  Future<void> clearErrorMessage() async {
     errorMessage = "";
   }
 
+  // Método para crear un curso nuevo.
   Future<bool> createCourse(String name, String capacity, String date, String time) async {
-
     final url = Uri.parse('$baseUrl/api/courses');
     final headers = {
       'Content-Type': 'application/json',
@@ -98,7 +100,7 @@ class CourseProvider extends ChangeNotifier {
     final body = jsonEncode({
       'data': {
         'name': name,
-        'capacity': int.parse(capacity), 
+        'capacity': int.parse(capacity),
         'schedule': formattedDateTime,
       }
     });
@@ -107,25 +109,18 @@ class CourseProvider extends ChangeNotifier {
       final response = await http.post(url, headers: headers, body: body);
       
       if (response.statusCode == 200) {
-
-        await loadcurrentUserEnrolledCoursesList();
+        await loadcurrentUserEnrolledCoursesList(); // Recargar lista de cursos.
         return true;
-
       } else {
-        // Handle other status codes or errors
-        print('Failed to create course: ${response.statusCode}');
-        print(response.body);
         return false;
       }
     } catch (e) {
-      // Handle network or other errors
-      print('Error creating course: $e');
       return false;
     }
   }
 
+  // Método para actualizar un curso existente.
   Future<bool> updateCourse(String name, String capacity, String date, String time, int id) async {
-
     final url = Uri.parse('$baseUrl/api/courses/$id');
     final headers = {
       'Content-Type': 'application/json',
@@ -138,7 +133,7 @@ class CourseProvider extends ChangeNotifier {
     final body = jsonEncode({
       'data': {
         'name': name,
-        'capacity': int.parse(capacity), 
+        'capacity': int.parse(capacity),
         'schedule': formattedDateTime,
       }
     });
@@ -147,32 +142,24 @@ class CourseProvider extends ChangeNotifier {
       final response = await http.put(url, headers: headers, body: body);
       
       if (response.statusCode == 200) {
-
-        await loadcurrentUserEnrolledCoursesList();
+        await loadcurrentUserEnrolledCoursesList(); // Recargar lista de cursos.
         return true;
-
       } else {
-        // Handle other status codes or errors
-        print('Failed to create course: ${response.statusCode}');
-        print(response.body);
         return false;
       }
     } catch (e) {
-      // Handle network or other errors
-      print('Error creating course: $e');
       return false;
     }
   }
 
+  // Método para eliminar un curso.
   Future<bool> deleteCourse(Course course) async {
-
-    if(course.usersEnrolled.isNotEmpty){
+    if (course.usersEnrolled.isNotEmpty) {
       errorMessage = "(!) Este curso no se puede eliminar\nporque tiene usuarios enlistados";
-      notifyListeners(); 
+      notifyListeners();
       return false;
     }
     final url = Uri.parse('$baseUrl/api/courses/${course.id}');
-    print("URL: $url");
 
     try {
       final response = await http.delete(url, headers: {
@@ -181,24 +168,21 @@ class CourseProvider extends ChangeNotifier {
       });
 
       if (response.statusCode == 200) {
-        print('Course deleted successfully.');
-        notifyListeners(); 
+        notifyListeners();
         return true;
       } else {
-        print('Failed to delete course. Status code: ${response.statusCode}');
-        print('Response body: ${response.body}');
-        notifyListeners(); 
+        notifyListeners();
         return false;
       }
     } catch (error) {
-      print('Error deleting course: $error');
       return false;
     }
   }
 
+  // Método para obtener un curso por su ID.
   Future<Course?> getCourseById(String id) async {
     try {
-      // Iterate through the list to find the course with the matching id
+      // Iterar sobre la lista para encontrar el curso con el ID coincidente.
       for (Course course in currentUserEnrolledCourses) {
         if (course.id == id) {
           return course;
@@ -206,16 +190,16 @@ class CourseProvider extends ChangeNotifier {
       }
       return null;
     } catch (e) {
-      print('Error fetching course by id: $e');
       return null;
     }
   }
 
+  // Método para desinscribir un usuario de un curso.
   Future<void> unenrolledUserFromCourse(User user, Course course, String? jwtToken) async {
     final url = '$baseUrl/api/courses';
 
     try {
-      // Step 1: Fetch all course records
+      // Paso 1: Obtener todos los registros de cursos.
       final response = await http.get(
         Uri.parse('$url?populate=*'),
         headers: {
@@ -230,7 +214,7 @@ class CourseProvider extends ChangeNotifier {
 
       final courses = json.decode(response.body)['data'];
 
-      // Step 2: Find the specific course record
+      // Paso 2: Encontrar el registro del curso específico.
       final courseRecord = courses.firstWhere(
         (courseData) => courseData['id'].toString() == course.id,
         orElse: () => null,
@@ -242,10 +226,10 @@ class CourseProvider extends ChangeNotifier {
 
       final courseUsers = courseRecord['attributes']['users']['data'];
 
-      // Step 3: Remove the user from the course's user list
+      // Paso 3: Remover el usuario de la lista de usuarios del curso.
       final updatedUsers = courseUsers.where((userData) => userData['attributes']['cedula'] != user.cedula).toList();
 
-      // Step 4: Update the course record with the modified user list
+      // Paso 4: Actualizar el registro del curso con la lista de usuarios modificada.
       final updateResponse = await http.put(
         Uri.parse('$url/${course.id}'),
         headers: {
@@ -263,9 +247,8 @@ class CourseProvider extends ChangeNotifier {
         throw Exception('Failed to update course');
       }
 
-      print('User unenrolled successfully');
+    // ignore: empty_catches
     } catch (e) {
-      print('Error: $e');
     }
   }
 }
