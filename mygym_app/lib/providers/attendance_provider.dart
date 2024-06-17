@@ -13,6 +13,8 @@ class AttendanceProvider extends ChangeNotifier {
   String baseUrl = dotenv.env['BASE_URL']!;
 
   Future<void> updateUserAttendanceStatus(User user, String? attendanceStatus) async {
+
+    
     
     bool userExists = false;
     int existingIndex = -1;
@@ -26,8 +28,10 @@ class AttendanceProvider extends ChangeNotifier {
     }
 
     if (userExists) {
+      print("UPDATE STATUS: USER ${user.username}, STATUS: ${attendanceStatus}");
       attendanceList[existingIndex][user] = attendanceStatus;
     } else {
+      print("NEW ENTRY: USER ${user.username}, STATUS: ${attendanceStatus}");
       attendanceList.add({user: attendanceStatus});
     }
     
@@ -38,6 +42,8 @@ class AttendanceProvider extends ChangeNotifier {
   }
 
   Future<String?> getUserAttendanceList(User user) async {
+
+    print("USERS: ${attendanceList.length}");
     
     for (Map<User, String?> attendanceEntry in attendanceList) {
       User key = attendanceEntry.keys.first;
@@ -70,9 +76,9 @@ class AttendanceProvider extends ChangeNotifier {
     return userAttendanceStatusList;
   }
 
-  Future<void> clearAttendanceList() async {
+  /*Future<void> clearAttendanceList() async {
     attendanceList.clear();
-  }
+  }*/
 
 
   Future<void> setConsecutiveAbsences(User user, Course course, String? jwtToken, CourseProvider courseProvider) async {
