@@ -44,7 +44,7 @@ class _CourseClientsPageState extends State<CourseClientsPage> {
   }
 
   Future<void> refreshClients(CourseProvider courseProvider, AttendanceProvider attendanceProvider) async {
-    attendanceProvider.clearAttendanceList();
+    //attendanceProvider.clearAttendanceList();
     await courseProvider.loadcurrentUserEnrolledCoursesList();
     Course? newCourse = await courseProvider.getCourseById(course.id);
 
@@ -66,7 +66,7 @@ class _CourseClientsPageState extends State<CourseClientsPage> {
     //Providers ---------------------------------------------
 
     
-    attendanceProvider.clearAttendanceList();
+    //attendanceProvider.clearAttendanceList();
     courseProvider.loadcurrentUserEnrolledCoursesList();
 
     return Scaffold(
