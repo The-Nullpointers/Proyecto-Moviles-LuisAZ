@@ -137,7 +137,7 @@ class AttendanceProvider extends ChangeNotifier {
       consecutiveAbsences++;
 
       if(consecutiveAbsences >= 3){
-        await courseProvider.unenrollUserFromCourse(user, course, jwtToken);
+        await courseProvider.unenrolledUserFromCourse(user, course, jwtToken);
         
         final updateResponse = await http.delete(
           Uri.parse('$url/$attendanceId'),

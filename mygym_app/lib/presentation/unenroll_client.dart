@@ -4,7 +4,6 @@ import 'package:mygym_app/config/text_styles.dart';
 import 'package:mygym_app/models/course.dart';
 import 'package:mygym_app/models/user.dart';
 import 'package:mygym_app/providers/attendance_provider.dart';
-import 'package:mygym_app/providers/auth_provider.dart';
 import 'package:mygym_app/providers/local_storage_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -16,24 +15,26 @@ class UnenrollClientPage extends StatefulWidget {
 }
 
 class _UnenrollClientPageState extends State<UnenrollClientPage> {
-  late Course currentCourse;
-  List<User> usersEnrrolled = [];
-  late AttendanceProvider attendanceProvider;
-  late LocalStorageProvider localStorageProvider;
-  List<String> items = [];
-  late Future<void> fetchFuture;
-  bool isInitialized = false;
-  String? selectedItem; // Initialize selectedItem as nullable
+  late Course currentCourse; // Curso actual seleccionado
+  List<User> usersEnrolled = []; // Lista de usuarios inscritos en el curso
+  late AttendanceProvider attendanceProvider; // Proveedor de asistencia
+  late LocalStorageProvider localStorageProvider; // Proveedor de almacenamiento local
+  List<String> items = []; // Lista de ítems para el Dropdown
+  late Future<void> fetchFuture; // Future para la carga de datos
+  bool isInitialized = false; // Estado de inicialización
+  String? selectedItem; // Ítem seleccionado, inicializado como nullable
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
     if (!isInitialized) {
+      // Obtiene los argumentos de la ruta
       final args = ModalRoute.of(context)!.settings.arguments;
       if (args != null && args is Course) {
-        currentCourse = args;
+        currentCourse = args; // Asigna el curso actual
       } else {
+        // Inicializa un curso vacío si no hay argumentos
         currentCourse = Course(
           id: "",
           name: '',
@@ -43,19 +44,23 @@ class _UnenrollClientPageState extends State<UnenrollClientPage> {
         );
       }
 
+      // Obtiene las instancias de los proveedores
       localStorageProvider = context.read<LocalStorageProvider>();
       attendanceProvider = context.read<AttendanceProvider>();
+      // Inicializa el Future para cargar los usuarios e ítems
       fetchFuture = fetchUsersAndItems();
-      isInitialized = true;
+      isInitialized = true; // Marca la página como inicializada
     }
   }
 
+  // Función para cargar los usuarios e ítems
   Future<void> fetchUsersAndItems() async {
     final jwt = await localStorageProvider.getCurrentUserJWT();
-    usersEnrrolled = await attendanceProvider.getUsersEnrolledInCourse(currentCourse, jwt);
+    usersEnrolled = await attendanceProvider.getUsersEnrolledInCourse(currentCourse, jwt);
 
+    // Actualiza la lista de ítems para el Dropdown
     setState(() {
-      items = usersEnrrolled
+      items = usersEnrolled
           .map((user) => "${user.username} - ${user.cedula}")
           .toList();
     });
@@ -63,7 +68,7 @@ class _UnenrollClientPageState extends State<UnenrollClientPage> {
 
   @override
   Widget build(BuildContext context) {
-    String errorMessage = "";
+    String errorMessage = ""; // Mensaje de error
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -78,9 +83,9 @@ class _UnenrollClientPageState extends State<UnenrollClientPage> {
         future: fetchFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator()); // Muestra un indicador de carga
           } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+            return Center(child: Text('Error: ${snapshot.error}')); // Muestra un mensaje de error
           } else {
             return Center(
               child: Column(
@@ -90,12 +95,12 @@ class _UnenrollClientPageState extends State<UnenrollClientPage> {
                     "Dar de baja Cliente",
                     style: TextStyles.titles(fontSize: 35),
                   ),
-                  const SizedBox(height: 10,),
+                  const SizedBox(height: 10),
                   Text(
                     currentCourse.name,
                     style: TextStyles.titles(),
                   ),
-                  const SizedBox(height: 10,),
+                  const SizedBox(height: 10),
                   Padding(
                     padding: const EdgeInsets.only(top: 30, bottom: 20, left: 10, right: 10),
                     child: Row(
@@ -124,8 +129,7 @@ class _UnenrollClientPageState extends State<UnenrollClientPage> {
                             ),
                             onChanged: (String? newValue) {
                               setState(() {
-                                selectedItem = newValue;
-                                print("ITEM CHANGE: $selectedItem");
+                                selectedItem = newValue; // Actualiza el ítem seleccionado
                               });
                             },
                             items: items.map<DropdownMenuItem<String>>(
@@ -148,7 +152,6 @@ class _UnenrollClientPageState extends State<UnenrollClientPage> {
                       ],
                     ),
                   ),
-
                   Padding(
                     padding: const EdgeInsets.all(30),
                     child: Text(
@@ -156,18 +159,20 @@ class _UnenrollClientPageState extends State<UnenrollClientPage> {
                       style: TextStyles.errorMessages(),
                     ),
                   ),
-
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       ElevatedButton(
                         style: ButtonStyles.primaryButton(
-                          backgroundColor: Color.fromARGB(255, 159, 25, 25),
+                          backgroundColor: const Color.fromARGB(255, 159, 25, 25),
                         ),
                         onPressed: () async {
-                          print("GUARDAR");
-                          if(selectedItem != null) {
-                            if (await attendanceProvider.unenrollClient(selectedItem!, currentCourse, await localStorageProvider.getCurrentUserJWT())) {
+                          if (selectedItem != null) {
+                            // Intenta dar de baja al cliente seleccionado
+                            /*
+                            if (await attendanceProvider.unenrolledUserFromCourse(
+                                selectedItem!, currentCourse, await localStorageProvider.getCurrentUserJWT())) {
+                              // Muestra un diálogo de éxito
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
@@ -178,8 +183,8 @@ class _UnenrollClientPageState extends State<UnenrollClientPage> {
                                     actions: <Widget>[
                                       TextButton(
                                         onPressed: () async {
-                                          Navigator.of(context).pop();
-                                          Navigator.of(context).pop();
+                                          Navigator.of(context).pop(); // Cierra el diálogo
+                                          Navigator.of(context).pop(); // Vuelve a la página anterior
                                         },
                                         child: const Text('Aceptar'),
                                       ),
@@ -187,13 +192,14 @@ class _UnenrollClientPageState extends State<UnenrollClientPage> {
                                   );
                                 },
                               );
-                            }
+                            }*/
+
+                            
                           } else {
-                            errorMessage = "(!) Debe seleccionar un cliente";
+                            errorMessage = "(!) Debe seleccionar un cliente"; // Muestra un mensaje de error
                             setState(() {});
                           }
                         },
-                        
                         child: Text(
                           'Dar de Baja',
                           style: TextStyles.buttonTexts(),
@@ -204,7 +210,7 @@ class _UnenrollClientPageState extends State<UnenrollClientPage> {
                           backgroundColor: const Color.fromARGB(255, 0, 96, 131),
                         ),
                         onPressed: () {
-                          Navigator.pop(context);
+                          Navigator.pop(context); // Vuelve a la página anterior
                         },
                         child: Text(
                           'Volver',
